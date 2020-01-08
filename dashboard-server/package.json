@@ -1,0 +1,22 @@
+{
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@userdashboard/dashboard": "^1.0.20",
+    "@userdashboard/organizations": "^1.0.12",
+    "@userdashboard/stripe-subscriptions": "^1.0.10"
+  },
+  "dashboard": {
+    "title": "Hastebin",
+    "modules": [
+      "@userdashboard/organizations",
+      "@userdashboard/stripe-subscriptions"
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+.navigation,
+body,
+body.entry { background-color: #002B36 !important; color: rgba(255, 255, 255, 0.75) }
+th { background-color: rgba(255, 255, 255, 0.5) !important; border: rgba(255, 255, 255, 0.5) !important; color: rgba(0, 0, 0, 0.75) }
+td a { color: #FFF !important }
+h1, 
+h2,
+p,
+td,
+a { color: rgba(255, 255, 255, 0.75) !important }
+label { color: rgba(255, 255, 255, 0.75) !important }
+.list-table th,
+.object-table th { background-color: rgba(255, 255, 255, 0.5) !important; color: #002B36 !important }
+.object-table th,
+.object-table td,
+.list-table th,
+.list-table td  { border-color: rgba(255, 255, 255, 0.5) !important }
+.list-table tr:nth-child(2n-1) td { background-color: rgba(0, 0, 0, 0.25) !important }
+a.pure-button,
+button.pure-button { border-color: #666; background-image: none; background-color: rgba(0, 0, 0, 0.5) !important; color: rgba(255, 255, 255, 0.5) !important }
+a.pure-button-primary,
+button.pure-button-primary { border-color: #333; background-image: none; background-color: rgba(0, 0, 0, 0.75) !important; color: rgba(255, 255, 255, 0.75) !important }

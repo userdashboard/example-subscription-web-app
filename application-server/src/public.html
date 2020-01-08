@@ -1,0 +1,60 @@
+<html>
+	<head>
+		<title></title>
+		<meta charset="utf-8" />
+		<link rel="stylesheet" type="text/css" href="/public/app.css"/>
+		<script type="text/javascript" src="/public/highlight.min.js"></script>
+		<meta name="robots" content="noindex,nofollow"/>
+		<script>
+			window.onload = function() {
+				post.document = decodeURI(post.document)
+				var high
+				try {
+					if (post.language === 'txt') {
+						high = { value: htmlEscape(post.document) }
+					}
+					else if (post.language === 'html') {
+						high = hljs.highlight('html', htmlEscape(post.document))
+					}
+					else if (post.language) {
+						high = hljs.highlight(post.language, post.document)
+					}
+					else {
+						high = hljs.highlightAuto(post.document)
+					}
+				} catch (error) {
+					// failed highlight, fall back on auto
+					high = hljs.highlightAuto(post.document)
+				}
+				document.getElementById('post-preview').firstChild.innerHTML = high.value
+				addLineNumbers(post.document.split('\n').length)
+			}
+
+			function addLineNumbers(lineCount) {
+				var h = ['<ol>']
+				for (var i = 0; i < lineCount; i++) {
+					h.push('<li></li>')
+				}
+				document.getElementById('line-numbers').innerHTML = h.join('') + '</ol>'
+			}
+
+			function htmlEscape(s) {
+				return s.replace(/&/g, '&amp;').replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;')
+			}
+		</script>
+	</head>
+	<body>
+		<header>
+			<span class="logo">hastebin</span>
+		</header>
+		<section id="post-content">
+			<ul class="post-information">
+				<li>View public post</li>
+			</ul>
+			<div class="post-container">
+				<div id="line-numbers"></div>
+				<pre id="post-preview" class="hljs" tabindex="0"><code></code></pre>
+			</div>
+		</section>
+	</body>
+</html>

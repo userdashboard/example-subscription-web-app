@@ -1,0 +1,138 @@
+<html>
+	<head>
+		<title>hastebin</title>
+		<meta charset="utf-8" />
+		<script src="/whois.js"></script>
+		<link rel="stylesheet" type="text/css" href="/public/app.css"/>
+		<script type="text/javascript" src="/public/highlight.min.js"></script>
+		<script type="text/javascript" src="/public/app.js"></script>
+		<meta name="robots" content="noindex,nofollow"/>
+		<template id="head">
+			<style>.navigation { display: none }</style>
+		</template>
+	</head>
+	<body>
+		<menu>
+			<button id="create-button"><img src="/public/home.svg" /><span>Create new post</span></button>
+			<div><button id="list-button">My posts</button></div>
+			<div><button id="organization-list-button">Organization posts</button></div>
+		</menu>
+		<section id="list" class="content">
+			<h2>Posts</h2>
+			<p id="no-posts-1">You have not created any posts yet.</p>
+			<table id="list-table">
+				<thead>
+					<tr>
+						<th>Key</th>
+						<th>Created</th>
+						<th id="organization-column">Organization</th>
+						<th>Public link</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</section>
+		<section id="organization-list" class="content">
+			<h2>Organization posts</h2>
+			<p id="no-posts-2">There are no posts shared with your organization yet.</p>
+			<table id="organization-list-table">
+				<thead>
+					<tr>
+						<th>Created</th>
+						<th>Key</th>
+						<th>Public link</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</section>
+		<section id="post-content">
+			<ul class="post-information">
+				<li id="view">
+					<h2>
+						Viewing my post <span id="postid-1"></span>
+						<button id="delete-1">delete</button></button>
+					</h2>
+				</li>
+				<li id="view-organization">
+					<h2>
+						Viewing <span id="postid-2"></span> shared with organization
+					</h2>
+				</li>
+				<li id="view-organization-post-owner">
+					<h2>Viewing my post <span id="postid-3"></span> shared with organization</h2>
+					<button id="delete-3">delete</button></button>
+				</li>
+			</ul>
+			<div class="post-container">
+				<div id="line-numbers"></div>
+				<pre id="post-preview" class="hljs" tabindex="0"><code></code></pre>
+			</div>
+		</section>
+		<section id="post-creator">
+			<div class="content form">
+				<div class="form-padder">
+					<textarea id="post-textarea" spellcheck="false">Paste your text here...</textarea>
+				</div>
+				<div class="post-information">
+					<button id="save">Save post</button>
+					<div>
+						<label class="title" for="customid">Custom ID</label>
+						<input id="customid" type="text" value="" placeholder="random filename" size="5" />
+					</div>
+					<div>
+						<label class="title" for="customid">Syntax language</label>
+						<select id="language">
+							<option>Select language (default text)</option>
+							<option value="bash">Bash</option>
+							<option value="coffee">Coffee</option>
+							<option value="cpp">C++</option>
+							<option value="css">CSS</option>
+							<option value="pas">Delphi</option>
+							<option value="diff">Diff</option>
+							<option value="erl">Erlang</option>
+							<option value="go">Go</option>
+							<option value="hs">Haskell</option>
+							<option value="html">HTML</option>
+							<option value="ini">INI</option>
+							<option value="java">Java</option>
+							<option value="js">JavaScript</option>
+							<option value="json">JSON</option>
+							<option value="lisp">Lisp</option>
+							<option value="lua">Lua</option>
+							<option value="md">MarkDown</option>
+							<option value="m">Objective C</option>
+							<option value="php">PHP</option>
+							<option value="pl">Perl</option>
+							<option value="py">Python</option>
+							<option value="rb">Ruby</option>
+							<option value="scala">Scala</option>
+							<option value="sm">SmallTalk</option>
+							<option value="sql">SQL</option>
+							<option value="swift">Swift</option>
+							<option value="tex">Tex</option>
+							<option value="txt">Text</option>
+							<option value="vala">Vala</option>
+							<option value="vbs">VBScript</option>
+							<option value="xml">XML</option>
+						</select>
+					</div>
+					<div>
+						<label class="title" for="public">Public link</label>
+						<label>
+							<input id="public" type="checkbox">
+							Yes, make this publicly accessible
+						</label>
+					</div>
+					<div id="organization-container">
+						<label class="title" for="organization">Organization sharing</label>
+						<select id="organization">
+							<option>Optionally share with organization</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</section>
+	</body>
+</html>
