@@ -37,7 +37,7 @@ describe('hastebin-web-app-with-organizations', () => {
         }
       }
     ]
-    const page = await req.get()
+    const result = await req.get()
   })
 
   it('user 1 creates post', async () => {
@@ -56,7 +56,7 @@ describe('hastebin-web-app-with-organizations', () => {
         }
       }
     ]
-    const page = await req.post()
+    const result = await req.post()
   })
 
   it('user 1 creates organization', async () => {
@@ -75,7 +75,7 @@ describe('hastebin-web-app-with-organizations', () => {
         }
       }
     ]
-    const page = await req.post()
+    const result = await req.post()
   })
 
   it('user 1 creates invitation', async () => {
@@ -94,7 +94,7 @@ describe('hastebin-web-app-with-organizations', () => {
         }
       }
     ]
-    const page = await req.post()
+    const result = await req.post()
   })
 
   it('user 2 creates account', async () => {
@@ -113,7 +113,7 @@ describe('hastebin-web-app-with-organizations', () => {
         }
       }
     ]
-    const page = await req.post()
+    const result = await req.post()
   })
 
   it('user 2 accepts invitation', async () => {
@@ -132,7 +132,7 @@ describe('hastebin-web-app-with-organizations', () => {
         }
       }
     ]
-    const page = await req.post()
+    const result = await req.post()
   })
 
   it('user 2 creates shared post', async () => {
@@ -151,7 +151,7 @@ describe('hastebin-web-app-with-organizations', () => {
         }
       }
     ]
-    const page = await req.post()
+    const result = await req.post()
   })
 
   it('user 1 accesses shared post', async () => {
@@ -170,7 +170,7 @@ describe('hastebin-web-app-with-organizations', () => {
         }
       }
     ]
-    const page = await req.post()
+    const result = await req.post()
   })
 })
 

@@ -34,6 +34,6 @@
   ],
   "scripts": {
     "start": "node main.js",
-    "test": "mocha --recursive"
+    "test": "mocha --recursive --bail"
   }
 }
