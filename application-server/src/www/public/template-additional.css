@@ -13,3 +13,5 @@ body,
 .navigation a,
 .navigation span { color: rgba(255, 255, 255, 0.75) !important; padding: 0 0.5rem }
 .navigation a:hover { color: #FFF; background-color: rgba(255, 255, 255, 0.25) }
+select { background-color: #FFF; color: #000 !important }
+select option  { color: #000 !important; background-color: #FFF }

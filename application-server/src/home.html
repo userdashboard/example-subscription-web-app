@@ -2,13 +2,16 @@
 	<head>
 		<title>hastebin</title>
 		<meta charset="utf-8" />
-		<script src="/whois.js"></script>
 		<link rel="stylesheet" type="text/css" href="/public/app.css"/>
 		<script type="text/javascript" src="/public/highlight.min.js"></script>
 		<script type="text/javascript" src="/public/app.js"></script>
 		<meta name="robots" content="noindex,nofollow"/>
 		<template id="head">
-			<style>.navigation { display: none }</style>
+			<style>
+			.navigation { 
+				display: none 
+			}
+			</style>
 		</template>
 	</head>
 	<body>
@@ -71,18 +74,18 @@
 			</div>
 		</section>
 		<section id="post-creator">
-			<div class="content form">
+			<div class="content form" id="submit-form">
 				<div class="form-padder">
 					<textarea id="post-textarea" spellcheck="false">Paste your text here...</textarea>
 				</div>
 				<div class="post-information">
-					<button id="save">Save post</button>
+					<button id="submit-button">Save post</button>
 					<div>
-						<label class="title" for="customid">Custom ID</label>
-						<input id="customid" type="text" value="" placeholder="random filename" size="5" />
+						<label class="title" for="documentid">Custom ID</label>
+						<input id="documentid" type="text" value="" placeholder="random filename" size="5" />
 					</div>
 					<div>
-						<label class="title" for="customid">Syntax language</label>
+						<label class="title" for="language">Syntax language</label>
 						<select id="language">
 							<option>Select language (default text)</option>
 							<option value="bash">Bash</option>
@@ -128,7 +131,7 @@
 					<div id="organization-container">
 						<label class="title" for="organization">Organization sharing</label>
 						<select id="organization">
-							<option>Optionally share with organization</option>
+							<option>Select organization to share with</option>
 						</select>
 					</div>
 				</div>

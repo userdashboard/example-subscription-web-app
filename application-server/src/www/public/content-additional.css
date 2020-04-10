@@ -20,3 +20,5 @@ a.pure-button,
 button.pure-button { border-color: #666; background-image: none; background-color: rgba(0, 0, 0, 0.5) !important; color: rgba(255, 255, 255, 0.5) !important }
 a.pure-button-primary,
 button.pure-button-primary { border-color: #333; background-image: none; background-color: rgba(0, 0, 0, 0.75) !important; color: rgba(255, 255, 255, 0.75) !important }
+select { background-color: #FFF; color: #000 !important }
+select option  { color: #000 !important; background-color: #FFF }

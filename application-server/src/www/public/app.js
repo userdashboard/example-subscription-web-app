@@ -6,7 +6,7 @@ window.onload = function () {
     /* content */ 'list', 'organization-list', 'post-content', 'post-creator',
     /* viewing posts  */ 'view', 'view-organization', 'view-organization-post-owner', 'postid-1', 'postid-2', 'postid-3', 'line-numbers', 'post-preview', 'delete-1', 'delete-3',
     /* listing posts  */ 'list-table', 'organization-list-table', 'no-posts-1', 'no-posts-2',
-    /* creating posts */ 'post-textarea', 'customid', 'language', 'public', 'organization', 'save']
+    /* creating posts */ 'post-textarea', 'documentid', 'language', 'public', 'organization', 'organization-container', 'submit-button']
   for (var i = 0, len = cacheElements.length; i < len; i++) {
     elements[cacheElements[i]] = document.getElementById(cacheElements[i])
   }
@@ -15,7 +15,7 @@ window.onload = function () {
     elements['post-textarea'].value = ''
     elements['post-textarea'].focus()
     elements.language.selectedIndex = 0
-    elements.customid.value = ''
+    elements.documentid.value = ''
     return showContent('post-creator')
   }
   elements['list-button'].onclick = function () {
@@ -41,10 +41,10 @@ window.onload = function () {
     }
   } else {
     elements['organization-list-button'].style.display = 'none'
-    elements.organization.style.display = 'none'
+    elements['organization-container'].style.display = 'none'
   }
   // other content buttons
-  elements.save.onclick = saveNewDocument
+  elements['submit-button'].onclick = saveNewDocument
   elements['delete-1'].onclick = deletePost
   elements['delete-3'].onclick = deletePost
   // clear default text when clicking textarea
@@ -58,13 +58,13 @@ window.onload = function () {
     if (!extension) {
       return
     }
-    var newid = elements.customid.value
+    var newid = elements.documentid.value
     var oldPeriod = newid.indexOf('.')
     if (oldPeriod > -1) {
       newid = newid.substring(0, oldPeriod)
     }
     newid += '.' + extension
-    elements.customid.value = newid
+    elements.documentid.value = newid
   }
   // sets up your own posts with delete options
   listPosts()
@@ -79,14 +79,18 @@ window.onload = function () {
     }
   }
   // display the initial content
-  showContent('post-creator')
+  var content = window.sessionStorage.getItem('content')
+  showContent(content || 'post-creator')
+  if (content === 'post-content') {
+    var post = window.sessionStorage.getItem('post')
+    if (post) {
+      showPostContents(JSON.parse(post))
+    }
+  }
 }
 
 function listPosts (organizationid) {
-  var path = '/documents'
-  if (organizationid) {
-    path += '/organization/' + organizationid
-  }
+  var path = organizationid ? '/api/user/organization-documents?organizationid=' + organizationid : '/api/user/documents?accountid=' + window.user.account.accountid
   return send(path, null, 'GET', function (error, posts) {
     if (error) {
       return showMessage(error.message, 'error')
@@ -105,7 +109,7 @@ function listPosts (organizationid) {
 function loadDocument (event) {
   event.preventDefault()
   var link = event.target
-  var path = '/document/' + link.innerHTML
+  var path = '/api/user/document?documentid=' + link.innerHTML
   elements['post-preview'].firstChild.innerHTML = ''
   elements['line-numbers'].innerHTML = ''
   return send(path, null, 'GET', function (error, result) {
@@ -124,14 +128,14 @@ function saveNewDocument () {
       postSettings.organizationid = elements.organization.options[elements.organization.selectedIndex].value
     }
   }
-  var ispublic = elements.public = elements.public || document.getElementById('public')
-  if (ispublic.checked) {
+  var isPublic = elements.public = elements.public || document.getElementById('public')
+  if (isPublic.checked) {
     postSettings.public = true
   }
-  if (elements.customid.value) {
-    postSettings.customid = elements.customid.value
+  if (elements.documentid.value) {
+    postSettings.documentid = elements.documentid.value
     // validate here
-    var parts = postSettings.customid.split('.')
+    var parts = postSettings.documentid.split('.')
     if (parts.length > 2) {
       return showMessage('Filenames must be alphanumeric, with optional supported file extensions.')
     } else if (parts.length === 2) {
@@ -159,7 +163,7 @@ function saveNewDocument () {
     return showMessage('No document to save', 'error')
   }
   postSettings.document = encodeURI(elements['post-textarea'].value)
-  return send('/document', postSettings, 'POST', function (error, result) {
+  return send('/api/user/create-document?accountid=' + window.user.account.accountid, postSettings, 'POST', function (error, result) {
     if (error) {
       return showMessage(error.message, 'error')
     }
@@ -171,7 +175,7 @@ function saveNewDocument () {
 
 function deletePost (event) {
   var button = event.target
-  var path = '/document/' + button.key
+  var path = '/api/user/delete-document?documentid=' + button.key
   return send(path, null, 'DELETE', function (error) {
     if (error) {
       return showMessage(error.message, 'error')
@@ -204,6 +208,7 @@ function deletePost (event) {
 }
 
 function showPostContents (post) {
+  window.sessionStorage.setItem('post', JSON.stringify(post))
   if (!post.organizationid) {
     elements.view.style.display = ''
     elements['view-organization'].style.display = 'none'
@@ -247,9 +252,10 @@ function renderPostRow (personal, meta) {
   var row = table.insertRow(table.rows.length)
   row.id = (personal ? 'personal-' : 'organization-') + meta.key
   var keyLink = document.createElement('a')
+  keyLink.id = meta.key
   keyLink.innerHTML = meta.key
   keyLink.onclick = loadDocument
-  keyLink.href = '#'
+  keyLink.href = '/document/' + meta.key
   var createdCell = row.insertCell(0)
   createdCell.innerHTML = new Date(meta.created * 1000)
   var keyCell = row.insertCell(1)
@@ -281,6 +287,7 @@ function renderPostRow (personal, meta) {
 }
 
 function showContent (type) {
+  window.sessionStorage.setItem('content', type)
   // active content button
   elements['create-button'].className = type === 'post-creator' ? 'active' : ''
   elements['list-button'].className = type === 'list' ? 'active' : ''
@@ -297,7 +304,7 @@ function htmlEscape (s) {
 }
 
 function showMessage (message, css) {
-  throw new Error()
+  console.log('got a message', message, css)
 }
 
 function addLineNumbers (lineCount) {

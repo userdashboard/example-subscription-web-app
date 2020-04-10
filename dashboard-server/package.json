@@ -3,13 +3,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha *.test.js --recursive --bail --no-colors --timeout 1800000 --slow 1800000 --exit"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@userdashboard/dashboard": "^1.0.20",
-    "@userdashboard/organizations": "^1.0.12",
+    "@userdashboard/dashboard": "^1.0.157",
+    "@userdashboard/organizations": "^1.0.69",
     "@userdashboard/stripe-subscriptions": "^1.0.10"
   },
   "dashboard": {
@@ -17,6 +17,15 @@
     "modules": [
       "@userdashboard/organizations",
       "@userdashboard/stripe-subscriptions"
+    ],
+    "server": [
+      "/src/server/allow-api-requests.js"
+    ],
+    "proxy": [
+      "/src/proxy/x-account.js",
+      "/src/proxy/x-memberships.js",
+      "/src/proxy/x-organizations.js",
+      "/src/proxy/x-subscriptions.js"
     ]
   }
 }
