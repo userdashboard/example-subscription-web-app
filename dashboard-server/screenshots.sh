@@ -4,10 +4,6 @@
 if [ ! -d node_modules/puppeteer ] || [ ! -d node_modules/ngrok ]; then
   npm install puppeteer ngrok --no-save
 fi
-PARAMS=""
-if [ ! -z "$1" ]; then
-  PARAMS="$PARAMS -- --grep $1"
-fi
 NODE_ENV="testing" \
 APPLICATION_SERVER_TOKEN="this is the token" \
 APPLICATION_SERVER="http://localhost:8700" \
@@ -24,4 +20,4 @@ IP=0.0.0.0 \
 REQUIRE_SUBSCRIPTION=true \
 REQUIRE_PAYMENT=true \
 REQUIRE_PAYMENT_AUTHORIZATION=true \
-npm test $PARAMS
+npm test -- --grep screenshots

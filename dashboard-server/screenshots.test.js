@@ -4,7 +4,8 @@ global.applicationPath = __dirname
 const fs = require('fs')
 const pasteText = fs.readFileSync('./node_modules/@userdashboard/dashboard/readme.md').toString()
 let applicationServer
-const TestHelper = require('@userdashboard/stripe-subscriptions/test-helper.js')
+const TestHelperSubscriptions = require('@userdashboard/stripe-subscriptions/test-helper.js')
+const TestHelperOrganizations = require('@userdashboard/stripe-subscriptions/test-helper.js')
 const TestStripeAccounts = require('@userdashboard/stripe-subscriptions/test-stripe-accounts.js')
 
 before(async () => {
@@ -25,11 +26,11 @@ after(async () => {
 
 describe('example-subscription-web-app', () => {
   it('administrator creates product and plan (screenshots)', async () => {
-    const owner = await TestHelper.createOwner()
-    const req = TestHelper.createRequest('/home')
+    const owner = await TestHelperSubscriptions.createOwner()
+    const req = TestHelperSubscriptions.createRequest('/home')
     req.account = owner.account
     req.session = owner.session
-    req.filename = '/src/www/example-subscription-app/administrator-creates-product-plan.test.js'
+    req.filename = '/src/www/administrator-creates-product-plan.test.js'
     req.screenshots = [
       { hover: '#administrator-menu-container' },
       { click: '/administrator/subscriptions' },
@@ -58,13 +59,110 @@ describe('example-subscription-web-app', () => {
     const result = await req.post()
   })
 
-  it.only('user 1 registers and subscribes', async () => {
+  it('user 1 registers and must select plan', async () => {
     const administrator = await TestStripeAccounts.createOwnerWithPlan()
     global.stripeJS = 3
     global.requireSubscription = true
-    const userIdentity = TestHelper.nextIdentity()
-    const req = TestHelper.createRequest('/')
-    req.filename = '/src/www/example-subscription-app/user-creates-account.test.js'
+    const userIdentity = TestHelperSubscriptions.nextIdentity()
+    const req = TestHelperSubscriptions.createRequest('/')
+    req.filename = '/src/www/user-creates-account-select-plan.test.js'
+    req.screenshots = [
+      { click: '/account/register' },
+      { 
+        fill: '#submit-form', 
+        body: {
+          username: 'FirstUser',
+          password: '12345678',
+          confirm: '12345678'
+        },
+        waitAfter: async (page) => {
+          console.log('wait for plan selection form')
+          while (true) {
+            try {
+              await page.waitForNavigation()
+            } catch (error) {
+              await page.waitFor(100)
+              continue
+            }
+            const submitForm = await page.$('#submit-form')
+            if (submitForm) {
+              return
+            }
+            await page.waitFor(100)
+          }
+        }
+      }
+    ]
+    const result = await req.post() 
+    assert.strictEqual(result.redirect, '/home')
+  })
+
+  it('user 1 selects plan and must enter billing information', async () => {
+    const administrator = await TestStripeAccounts.createOwnerWithPlan()
+    global.stripeJS = 3
+    global.requireSubscription = true
+    const req = TestHelperSubscriptions.createRequest('/')
+    req.filename = '/src/www/user-selects-plan-enter-billing.test.js'
+    req.screenshots = [
+      { click: '/account/register' },
+      { 
+        fill: '#submit-form', 
+        body: {
+          username: 'FirstUser',
+          password: '12345678',
+          confirm: '12345678'
+        },
+        waitAfter: async (page) => {
+          console.log('wait for plan selection form')
+          while (true) {
+            try {
+              await page.waitForNavigation()
+            } catch (error) {
+              await page.waitFor(100)
+              continue
+            }
+            const submitForm = await page.$('#submit-form')
+            if (submitForm) {
+              return
+            }
+            await page.waitFor(100)
+          }
+        }
+      },      
+      {
+        fill: '#submit-form',
+        body: {
+          planid: administrator.plan.id
+        },
+        waitAfter: async (page) => {
+          while (true) {
+            try {
+              const cardContainerChildren = await page.evaluate(async () => {
+                var cardContainer = document.getElementById('card-container')
+                return cardContainer && cardContainer.children.length
+              })
+              if (cardContainerChildren) {
+                await page.screenshot({ path: `${__dirname}/ss1.png`, type: 'png' })
+                return
+              }
+            } catch (error) {
+            }
+            await page.waitFor(100)
+          }
+        }
+      }
+    ]
+    const result = await req.post() 
+    assert.strictEqual(result.redirect, '/home')
+  })
+
+  it('user 1 registers and subscribes', async () => {
+    const administrator = await TestStripeAccounts.createOwnerWithPlan()
+    global.stripeJS = 3
+    global.requireSubscription = true
+    const userIdentity = TestHelperSubscriptions.nextIdentity()
+    const req = TestHelperSubscriptions.createRequest('/')
+    req.filename = '/src/www/user-creates-account-and-subscription.test.js'
     req.screenshots = [
       { click: '/account/register' },
       { 
@@ -136,7 +234,6 @@ describe('example-subscription-web-app', () => {
           customerid: 'cus_'
         },
         waitBefore: async (page) => {
-          console.log('waiting for message container children or redirect')
           while (true) {
             try {
               const customeridChildren = await page.evaluate(async () => {
@@ -144,7 +241,6 @@ describe('example-subscription-web-app', () => {
                 return customerid && customerid.options.length
               })
               if (customeridChildren) {
-                console.log('finished waiting after card form submission')
                 await page.screenshot({ path: `${__dirname}/ss1.png`, type: 'png' })
                 return
               }
@@ -169,7 +265,6 @@ describe('example-subscription-web-app', () => {
               return postCreator && postCreator.style.display ? postCreator.style.display : 'none'
             })
             if (postCreator === 'block') {
-              console.log('got post creator being displayed')
               return
             }
             await page.waitFor(100)
@@ -181,9 +276,34 @@ describe('example-subscription-web-app', () => {
     assert.strictEqual(result.redirect, '/home')
   })
 
+
+  it('user 1 cancels subscription', async () => {
+    const administrator = await TestStripeAccounts.createOwnerWithPlan()
+    global.requireSubscription = true
+    const user = await TestStripeAccounts.createUserWithPaymentMethod()
+    await TestHelperSubscriptions.createSubscription(user, administrator.plan.id)
+    const req = TestHelperSubscriptions.createRequest('/home')
+    req.account = user.account
+    req.session = user.session
+    req.filename = '/src/www/user-cancels-subscription.test.js'
+    req.screenshots = [
+      { hover: '#account-menu-container' },
+      { click: '/account/subscriptions' },
+      { click: '/account/subscriptions/subscriptions' },
+      { click: `/account/subscriptions/subscription?subscriptionid=${user.subscription.id}` },
+      { click: `/account/subscriptions/cancel-subscription?subscriptionid=${user.subscription.id}` },
+      { fill: '#submit-form' }
+    ]
+    const result = await req.post() 
+    const doc = TestHelperSubscriptions.extractDoc(result.html)
+    const messageContainer = doc.getElementById('message-container')
+    const message = messageContainer.child[0]
+    assert.strictEqual(message.attr.template, 'success')
+  })
+
   it('user 1 creates post', async () => {
-    const user = await TestHelper.createUser()
-    const req = TestHelper.createRequest('/home')
+    const user = await TestHelperSubscriptions.createUser()
+    const req = TestHelperSubscriptions.createRequest('/home')
     req.waitFormComplete = async (page) => {
       while (true) {
         const frame = await page.frames().find(f => f.name() === 'application-iframe')
@@ -203,7 +323,7 @@ describe('example-subscription-web-app', () => {
     }
     req.account = user.account
     req.session = user.session
-    req.filename = '/src/www/example-subscription-app/user-creates-post.test.js'
+    req.filename = '/src/www/user-creates-post.test.js'
     req.screenshots = [{ 
       fill: '#post-creator', 
       body: {
@@ -218,11 +338,11 @@ describe('example-subscription-web-app', () => {
   })
 
   it('user 1 creates organization', async () => {
-    const user = await TestHelper.createUser()
-    const req = TestHelper.createRequest('/home')
+    const user = await TestHelperSubscriptions.createUser()
+    const req = TestHelperSubscriptions.createRequest('/home')
     req.account = user.account
     req.session = user.session
-    req.filename = '/src/www/example-subscription-app/user-creates-organization.test.js'
+    req.filename = '/src/www/user-creates-organization.test.js'
     req.screenshots = [
       { hover: '#account-menu-container' },
       { click: '/account/organizations' },
@@ -241,99 +361,31 @@ describe('example-subscription-web-app', () => {
     assert.strictEqual(result.redirect.endsWith('message=success'), true)
   })
 
-  it('user 1 creates invitation', async () => {
-    const user = await TestHelper.createUser()
-    const req = TestHelper.createRequest('/home')
-    req.account = user.account
-    req.session = user.session
-    req.filename = '/src/www/example-subscription-app/user-creates-invitation.test.js'
-    req.screenshots = [
-      { hover: '#account-menu-container' },
-      { click: '/account/organizations' },
-      { click: '/account/organizations/create-organization' },
-      {
-        fill: '#submit-form',
-        body: {
-          name: 'Developers',
-          email: 'organization@email.com',
-          'display-name': 'org owner',
-          'display-email': 'owner@organization.com'
-        }
-      },
-      { click: '/account/organizations/create-invitation' },
-      {
-        fill: '#submit-form',
-        body: {
-          code: 'secret'
-        }
-      }
-    ]
-    await req.post()
-    assert.strictEqual(1, 1)
-  })
-
-  it('user 2 accepts invitation', async () => {
-    const user = await TestHelper.createUser()
-    global.userProfileFields = ['display-name', 'display-email']
-    global.membershipProfileFields = ['display-name', 'display-email']
-    await TestHelper.createProfile(user, {
-      'display-name': user.profile.firstName,
-      'display-email': user.profile.contactEmail
-    })
-    await TestHelper.createOrganization(user, {
-      email: 'organization@' + user.profile.displayEmail.split('@')[1],
-      name: 'My organization',
-      profileid: user.profile.profileid
-    })
-    await TestHelper.createInvitation(user)
-    const user2 = await TestHelper.createUser()
-    const req = TestHelper.createRequest('/')
-    req.account = user2.account
-    req.session = user2.session
-    req.filename = '/src/www/example-subscription-app/user-accepts-invitation.test.js'
-    req.screenshots = [
-      { hover: '#account-menu-container' },
-      { click: '/account/organizations' },
-      { click: '/account/organizations/accept-invitation' },
-      {
-        fill: '#submit-form',
-        body: {
-          invitationid: user.invitation.invitationid,
-          'secret-code': user.invitation.secretCode,
-          'display-name': user2.profile.firstName,
-          'display-email': user2.profile.contactEmail
-        }
-      }
-    ]
-    await req.post()
-    assert.strictEqual(1, 1)
-  })
-
   it('user 2 creates shared post', async () => {
-    const user = await TestHelper.createUser()
+    const user = await TestHelperSubscriptions.createUser()
     global.userProfileFields = ['display-name', 'display-email']
     global.membershipProfileFields = ['display-name', 'display-email']
-    await TestHelper.createProfile(user, {
+    await TestHelperSubscriptions.createProfile(user, {
       'display-name': user.profile.firstName,
       'display-email': user.profile.contactEmail
     })
-    await TestHelper.createOrganization(user, {
+    await TestHelperOrganizations.createOrganization(user, {
       email: 'organization@' + user.profile.displayEmail.split('@')[1],
       name: 'My organization',
       profileid: user.profile.profileid
     })
-    await TestHelper.createInvitation(user)
-    const user2 = await TestHelper.createUser()
+    await TestHelperOrganizations.createInvitation(user)
+    const user2 = await TestHelperSubscriptions.createUser()
     global.userProfileFields = ['display-name', 'display-email']
-    await TestHelper.createProfile(user2, {
+    await TestHelperSubscriptions.createProfile(user2, {
       'display-name': user2.profile.firstName,
       'display-email': user2.profile.contactEmail
     })
-    await TestHelper.acceptInvitation(user2, user)
-    const req = TestHelper.createRequest('/home')
+    await TestHelperOrganizations.acceptInvitation(user2, user)
+    const req = TestHelperSubscriptions.createRequest('/home')
     req.account = user2.account
     req.session = user2.session
-    req.filename = '/src/www/example-subscription-app/user-creates-shared-post.test.js'
+    req.filename = '/src/www/user-creates-shared-post.test.js'
     req.screenshots = [
       { save: true }, 
       { 
@@ -367,20 +419,20 @@ describe('example-subscription-web-app', () => {
   })
 
   it('user 1 views shared post', async () => {
-    const user = await TestHelper.createUser()
+    const user = await TestHelperSubscriptions.createUser()
     global.userProfileFields = ['display-name', 'display-email']
     global.membershipProfileFields = ['display-name', 'display-email']
-    await TestHelper.createProfile(user, {
+    await TestHelperSubscriptions.createProfile(user, {
       'display-name': user.profile.firstName,
       'display-email': user.profile.contactEmail
     })
-    await TestHelper.createOrganization(user, {
+    await TestHelperOrganizations.createOrganization(user, {
       email: 'organization@' + user.profile.displayEmail.split('@')[1],
       name: 'My organization',
       profileid: user.profile.profileid
     })
-    await TestHelper.createInvitation(user)
-    const req = TestHelper.createRequest('/home')
+    await TestHelperOrganizations.createInvitation(user)
+    const req = TestHelperSubscriptions.createRequest('/home')
     req.account = user.account
     req.session = user.session
     req.body = {
@@ -424,18 +476,17 @@ describe('example-subscription-web-app', () => {
       }
     }
     await req.post()
-    const user2 = await TestHelper.createUser()
+    const user2 = await TestHelperSubscriptions.createUser()
     global.userProfileFields = ['display-name', 'display-email']
-    await TestHelper.createProfile(user2, {
+    await TestHelperSubscriptions.createProfile(user2, {
       'display-name': user2.profile.firstName,
       'display-email': user2.profile.contactEmail
     })
-    await TestHelper.acceptInvitation(user2, user)
-
-    const req2 = TestHelper.createRequest('/home')
+    await TestHelperOrganizations.acceptInvitation(user2, user)
+    const req2 = TestHelperSubscriptions.createRequest('/home')
     req2.account = user2.account
     req2.session = user2.session
-    req2.filename = '/src/www/example-subscription-app/user-views-shared-post.test.js'
+    req2.filename = '/src/www/user-views-shared-post.test.js'
     req2.screenshots = [
       { save: true },
       { 
