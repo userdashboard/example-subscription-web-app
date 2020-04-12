@@ -20,4 +20,4 @@ IP=0.0.0.0 \
 REQUIRE_SUBSCRIPTION=true \
 REQUIRE_PAYMENT=true \
 REQUIRE_PAYMENT_AUTHORIZATION=true \
-npm test -- --grep screenshots
+npm test
