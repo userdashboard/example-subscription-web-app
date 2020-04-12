@@ -30,7 +30,7 @@ describe('example-subscription-web-app', () => {
     const req = TestHelperSubscriptions.createRequest('/home')
     req.account = owner.account
     req.session = owner.session
-    req.filename = '/src/www/example-subscription-web-app/administrator-creates-product-plan.test.js'
+    req.filename = '/src/www/administrator-creates-product-plan.test.js'
     req.screenshots = [
       { hover: '#administrator-menu-container' },
       { click: '/administrator/subscriptions' },
@@ -65,7 +65,7 @@ describe('example-subscription-web-app', () => {
     global.requireSubscription = true
     const userIdentity = TestHelperSubscriptions.nextIdentity()
     const req = TestHelperSubscriptions.createRequest('/')
-    req.filename = '/src/www/example-subscription-web-app/user-creates-account-select-plan.test.js'
+    req.filename = '/src/www/user-creates-account-select-plan.test.js'
     req.screenshots = [
       { click: '/account/register' },
       { 
@@ -102,7 +102,7 @@ describe('example-subscription-web-app', () => {
     global.stripeJS = 3
     global.requireSubscription = true
     const req = TestHelperSubscriptions.createRequest('/')
-    req.filename = '/src/www/example-subscription-web-app/user-selects-plan-enter-billing.test.js'
+    req.filename = '/src/www/user-selects-plan-enter-billing.test.js'
     req.screenshots = [
       { click: '/account/register' },
       { 
@@ -162,7 +162,7 @@ describe('example-subscription-web-app', () => {
     global.requireSubscription = true
     const userIdentity = TestHelperSubscriptions.nextIdentity()
     const req = TestHelperSubscriptions.createRequest('/')
-    req.filename = '/src/www/example-subscription-web-app/user-creates-account-and-subscription.test.js'
+    req.filename = '/src/www/user-creates-account-and-subscription.test.js'
     req.screenshots = [
       { click: '/account/register' },
       { 
@@ -285,7 +285,7 @@ describe('example-subscription-web-app', () => {
     const req = TestHelperSubscriptions.createRequest('/home')
     req.account = user.account
     req.session = user.session
-    req.filename = '/src/www/example-subscription-web-app/user-cancels-subscription.test.js'
+    req.filename = '/src/www/user-cancels-subscription.test.js'
     req.screenshots = [
       { hover: '#account-menu-container' },
       { click: '/account/subscriptions' },
@@ -323,7 +323,7 @@ describe('example-subscription-web-app', () => {
     }
     req.account = user.account
     req.session = user.session
-    req.filename = '/src/www/example-subscription-web-app/user-creates-post.test.js'
+    req.filename = '/src/www/user-creates-post.test.js'
     req.screenshots = [{ 
       fill: '#post-creator', 
       body: {
@@ -342,7 +342,7 @@ describe('example-subscription-web-app', () => {
     const req = TestHelperSubscriptions.createRequest('/home')
     req.account = user.account
     req.session = user.session
-    req.filename = '/src/www/example-subscription-web-app/user-creates-organization.test.js'
+    req.filename = '/src/www/user-creates-organization.test.js'
     req.screenshots = [
       { hover: '#account-menu-container' },
       { click: '/account/organizations' },
@@ -385,7 +385,7 @@ describe('example-subscription-web-app', () => {
     const req = TestHelperSubscriptions.createRequest('/home')
     req.account = user2.account
     req.session = user2.session
-    req.filename = '/src/www/example-subscription-web-app/user-creates-shared-post.test.js'
+    req.filename = '/src/www/user-creates-shared-post.test.js'
     req.screenshots = [
       { save: true }, 
       { 
@@ -486,7 +486,7 @@ describe('example-subscription-web-app', () => {
     const req2 = TestHelperSubscriptions.createRequest('/home')
     req2.account = user2.account
     req2.session = user2.session
-    req2.filename = '/src/www/example-subscription-web-app/user-views-shared-post.test.js'
+    req2.filename = '/src/www/user-views-shared-post.test.js'
     req2.screenshots = [
       { save: true },
       { 
