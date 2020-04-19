@@ -13,7 +13,7 @@
   },
   "main": "haste",
   "dependencies": {
-    "@userdashboard/express-application-server": "^1.0.1",
+    "bcryptjs": "^2.4.3",
     "multiparty": "^4.2.1"
   },
   "devDependencies": {

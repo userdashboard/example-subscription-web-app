@@ -1,4 +1,6 @@
-const expressApplicationServer = require('@userdashboard/express-application-server')
+const bcrypt = require('./bcrypt.js')
+const crypto = require('crypto')
+const Document = require('./document.js')
 const fs = require('fs')
 const http = require('http')
 const Multiparty = require('multiparty')
@@ -8,10 +10,10 @@ const util = require('util')
 
 const apiCache = {}
 const fileCache = {}
-const errorPage = fs.readFileSync(path.join(__dirname, '/error.html')).toString()
-const homePage = fs.readFileSync(path.join(__dirname, '/home.html')).toString()
-const publicPage = fs.readFileSync(path.join(__dirname, '/public.html')).toString()
-const indexPage = fs.readFileSync(path.join(__dirname, '/index.html')).toString()
+const errorPage = fs.readFileSync(path.join(__dirname, '/www/error.html')).toString()
+const homePage = fs.readFileSync(path.join(__dirname, '/www/home.html')).toString()
+const publicPage = fs.readFileSync(path.join(__dirname, '/www/public.html')).toString()
+const indexPage = fs.readFileSync(path.join(__dirname, '/www/index.html')).toString()
 const wwwPath = path.join(__dirname, 'www')
 const mimeTypes = {
   js: 'text/javascript',
@@ -36,6 +38,24 @@ module.exports = {
     }
   }
 }
+
+const compareDashboardHash = util.promisify((req, callback) => {
+  if (!req.headers['x-dashboard-server']) {
+    return callback(null, req)
+  }
+  if (req.headers['x-dashboard-server'] !== process.env.DASHBOARD_SERVER) {
+    return callback(null, req)
+  }
+  let expected
+  if (!req.headers['x-accountid']) {
+    expected = process.env.APPLICATION_SERVER_TOKEN
+  } else {
+    expected = `${process.env.APPLICATION_SERVER_TOKEN}/${req.headers['x-accountid']}/${req.headers['x-sessionid']}`
+  }
+  const sha = crypto.createHash('sha256')
+  const expectedHash = sha.update(expected).digest('hex')
+  return bcrypt.compare(expectedHash, req.headers['x-dashboard-token'], callback)
+})
 
 const parsePostData = util.promisify((req, callback) => {
   if (req.headers &&
@@ -97,121 +117,6 @@ async function staticFile (req, res) {
   return res.end(blob)
 }
 
-async function receiveRequest (req, res) {
-  const question = req.url.indexOf('?')
-  if (question > -1) {
-    req.query = querystring.parse(req.url.substring(question + 1), '&', '=')
-  }
-  req.urlPath = req.url.split('?')[0]
-  if (req.urlPath === '/') {
-    res.setHeader('content-type', 'text/html')
-    return res.end(indexPage)
-  }
-  if (req.urlPath === '/favicon.ico' || 
-      req.urlPath === '/robots.txt' || 
-      req.urlPath.startsWith('/public/')) {
-    return staticFile(req, res)
-  }
-  await expressApplicationServer(req, res, async () => {
-    if (req.verified) {
-      if (req.headers['x-account']) {
-        req.accountid = req.headers['x-accountid']
-        req.sessionid = req.headers['x-sessionid']
-        if (req.headers['x-account']) {
-          req.account = JSON.parse(req.headers['x-account'])
-        }
-        if (req.headers['x-organizations']) {
-          req.organizations = JSON.parse(req.headers['x-organizations'])
-        }
-        if (req.headers['x-memberships']) {
-          req.memberships = JSON.parse(req.headers['x-memberships'])
-        }
-      }
-    }
-    if (!req.accountid) {
-      return throw511(req, res)
-    }
-    if (req.urlPath === '/home') {
-      res.setHeader('content-type', 'text/html')
-      const user = {
-        account: req.account,
-        session: req.session
-      }
-      if (req.organizations) {
-        user.organizations = req.organizations
-      }
-      if (req.memberships) {
-        user.memberships = req.memberships
-      }
-      let injectJS = [`window.user = ${JSON.stringify(user)}`]
-      if (global.publicDomain) {
-        injectJS.push(`window.publicDomain = "${global.publicDomain}"</script>`)
-      }
-      homePageText = homePage.replace('<head>', '<head><script>' + injectJS.join('\n') + '</script>')
-      return res.end(homePageText)
-    }
-    if (!req.urlPath.startsWith('/api/')) {
-      return throw404(req, res)
-    }
-    if (req.urlPath.startsWith('/administrator/')) {
-      if (!req.account.administrator) {
-        return throw500(req, res)
-      }
-    }
-    if (req.method === 'POST' || req.method === 'PATCH' || req.method === 'PUT' || req.method === 'DELETE') {
-      if (req.headers['content-type'] && req.headers['content-type'].indexOf('multipart/form-data;') > -1) {
-        try {
-          req.body = await parseMultiPartData(req)
-        } catch (error) {
-          return throw500(req, res)
-        }
-      }
-      if (!req.body) {
-        try {
-          req.bodyRaw = await parsePostData(req)
-        } catch (error) {
-          return throw500(req, res)
-        }
-        if (req.bodyRaw) {
-          req.body = querystring.parse(req.bodyRaw, '&', '=')
-        }
-      }
-    }
-    const apiPath = path.join(wwwPath, `${req.urlPath}.js`)
-    if (!fs.existsSync(apiPath)) {
-      return throw404(req, res)
-    }
-    let api
-    if (!process.env.HOT_RELOAD) {
-      api = apiCache[apiPath]
-      if (!api) {
-        api = apiCache[apiPath] = require(apiPath)
-      }
-    } else {
-      delete require.cache[require.resolve(apiPath)]
-      api = require(apiPath)
-    }
-    const method = req.method.toLowerCase()
-    if (!api[method]) {
-      return throw404(req, res)
-    }
-    if (api.auth !== false && !req.account) {
-      return throw511(req, res)
-    }
-    let result
-    try {
-      result = await api[method](req)
-    } catch (error) {
-      return throw500(req, res)
-    }
-    if (!result) {
-      return res.end()
-    }
-    res.writeHead(200, { 'content-type': 'application/json; charset=utf-8' })
-    return res.end(JSON.stringify(result))
-  })
-}
-
 function throw404 (req, res) {
   return throwError(req, res, 404)
 }
@@ -233,4 +138,148 @@ function throwError(req, res, error) {
   res.setHeader('content-type', 'text/html; charset=utf-8')
   res.statusCode = error
   return res.end(errorPage)
+}
+
+async function receiveRequest (req, res) {
+  const question = req.url.indexOf('?')
+  if (question > -1) {
+    req.query = querystring.parse(req.url.substring(question + 1), '&', '=')
+  }
+  req.urlPath = req.url.split('?')[0]
+  if (req.urlPath === '/') {
+    res.setHeader('content-type', 'text/html')
+    return res.end(indexPage)
+  }
+  if (req.urlPath === '/favicon.ico' || 
+      req.urlPath === '/robots.txt' || 
+      req.urlPath.startsWith('/public/')) {
+    return staticFile(req, res)
+  }
+  req.verified = await compareDashboardHash(req)
+  if (!req.verified) {
+    return throw500(req, res)
+  }
+  if (req.headers['x-account']) {
+    req.accountid = req.headers['x-accountid']
+    req.sessionid = req.headers['x-sessionid']
+    if (req.headers['x-account']) {
+      req.account = JSON.parse(req.headers['x-account'])
+    }
+    if (req.headers['x-organizations']) {
+      req.organizations = JSON.parse(req.headers['x-organizations'])
+    }
+    if (req.headers['x-memberships']) {
+      req.memberships = JSON.parse(req.headers['x-memberships'])
+    }
+  }
+  if (!req.accountid) {
+    return throw511(req, res)
+  }
+  if (req.urlPath === '/home') {
+    res.setHeader('content-type', 'text/html')
+    const user = {
+      account: req.account,
+      session: req.session
+    }
+    if (req.organizations) {
+      user.organizations = req.organizations
+    }
+    if (req.memberships) {
+      user.memberships = req.memberships
+    }
+    let injectJS = [`window.user = ${JSON.stringify(user)}`]
+    if (global.publicDomain) {
+      injectJS.push(`window.publicDomain = "${global.publicDomain}"</script>`)
+    }
+    const homePageText = homePage.replace('<head>', '<head><script>' + injectJS.join('\n') + '</script>')
+    return res.end(homePageText)
+  }
+  if (req.urlPath.startsWith('/document/')) {
+    res.setHeader('content-type', 'text/html')
+    const user = {
+      account: req.account || 'guest',
+      session: req.session || 'guest'
+    }
+    if (req.organizations) {
+      user.organizations = req.organizations || []
+    }
+    if (req.memberships) {
+      user.memberships = req.memberships || []
+    }
+    const postid = req.urlPath.substring('/document/'.length)
+    let injectJS = [`window.user = ${JSON.stringify(user)}`]
+    let post
+    try {
+      post = await Document.load(postid)
+    } catch (error) {
+    }
+    if (!post || !public) {
+      return throw404(req, res)
+    }
+    injectJS.push(`window.post = ${JSON.stringify(post)}`)
+    if (global.publicDomain) {
+      injectJS.push(`window.publicDomain = "${global.publicDomain}"</script>`)
+    }
+    const publicPageText = publicPage.replace('<head>', '<head><script>' + injectJS.join('\n') + '</script>')
+    return res.end(publicPageText)
+  }
+  if (!req.urlPath.startsWith('/api/')) {
+    return throw404(req, res)
+  }
+  if (req.urlPath.startsWith('/administrator/')) {
+    if (!req.account.administrator) {
+      return throw500(req, res)
+    }
+  }
+  if (req.method === 'POST ' || req.method === 'PATCH' || req.method === 'PUT' || req.method === 'DELETE') {
+    if (req.headers['content-type'] && req.headers['content-type'].indexOf('multipart/form-data;') > -1) {
+      try {
+        req.body = await parseMultiPartData(req)
+      } catch (error) {
+        return throw500(req, res)
+      }
+    }
+    if (!req.body) {
+      try {
+        req.bodyRaw = await parsePostData(req)
+      } catch (error) {
+        return throw500(req, res)
+      }
+      if (req.bodyRaw) {
+        req.body = querystring.parse(req.bodyRaw, '&', '=')
+      }
+    }
+  }
+  const apiPath = path.join(wwwPath, `${req.urlPath}.js`)
+  if (!fs.existsSync(apiPath)) {
+    return throw404(req, res)
+  }
+  let api
+  if (!process.env.HOT_RELOAD) {
+    api = apiCache[apiPath]
+    if (!api) {
+      api = apiCache[apiPath] = require(apiPath)
+    }
+  } else {
+    delete require.cache[require.resolve(apiPath)]
+    api = require(apiPath)
+  }
+  const method = req.method.toLowerCase()
+  if (!api[method]) {
+    return throw404(req, res)
+  }
+  if (api.auth !== false && !req.account) {
+    return throw511(req, res)
+  }
+  let result
+  try {
+    result = await api[method](req)
+  } catch (error) {
+    return throw500(req, res)
+  }
+  if (!result) {
+    return res.end()
+  }
+  res.writeHead(200, { 'content-type': 'application/json; charset=utf-8' })
+  return res.end(JSON.stringify(result))
 }
