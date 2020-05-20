@@ -8,9 +8,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@userdashboard/dashboard": "^1.0.157",
-    "@userdashboard/organizations": "^1.0.69",
-    "@userdashboard/stripe-subscriptions": "^1.0.10"
+    "@userdashboard/dashboard": "^1.0.186",
+    "@userdashboard/organizations": "^1.0.85",
+    "@userdashboard/stripe-subscriptions": "^1.0.37"
   },
   "dashboard": {
     "title": "Hastebin",
