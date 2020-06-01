@@ -13,7 +13,7 @@ module.exports = {
     global.dashboardServer = dashboardServer || global.dashboardServer
     await server.start(port, process.env.HOST || 'localhost')
   },
-  stop: async () =>{ 
+  stop: async () => {
     server.stop()
   }
 }

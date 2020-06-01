@@ -304,7 +304,7 @@ function htmlEscape (s) {
 }
 
 function showMessage (message, css) {
-  console.log('got a message', message, css)
+  // TODO: message handling
 }
 
 function addLineNumbers (lineCount) {

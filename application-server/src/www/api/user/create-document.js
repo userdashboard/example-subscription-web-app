@@ -43,7 +43,7 @@ module.exports = {
       if (!req.memberships || !req.memberships.length) {
         throw new Error('invalid-organization')
       }
-      let found 
+      let found
       for (const membership of req.memberships) {
         found = membership.organizationid === req.body.organizationid
         if (found) {
@@ -57,9 +57,9 @@ module.exports = {
     let document
     try {
       document = await Document.create(
-        req.body.document, 
-        req.body.documentid, 
-        req.body.public, 
+        req.body.document,
+        req.body.documentid,
+        req.body.public,
         req.query.accountid,
         req.body.organizationid
       )

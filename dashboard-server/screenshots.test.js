@@ -35,16 +35,21 @@ describe('example-subscription-web-app', () => {
       { hover: '#administrator-menu-container' },
       { click: '/administrator/subscriptions' },
       { click: '/administrator/subscriptions/create-product' },
-      { fill: '#submit-form', body: {
-        name: 'product',
-        statement_descriptor: 'description',
-        unit_label: 'thing'
-      }},
+      {
+        fill: '#submit-form',
+        body: {
+          name: 'product',
+          statement_descriptor: 'description',
+          unit_label: 'thing'
+        }
+      },
       { click: '/administrator/subscriptions/publish-product' },
       { fill: '#submit-form' },
       { click: '/administrator/subscriptions' },
       { click: '/administrator/subscriptions/create-plan' },
-      { fill: '#submit-form', body: {
+      {
+        fill: '#submit-form',
+        body: {
           planid: 'plan' + new Date().getTime(),
           amount: '1000',
           interval: 'month',
@@ -68,15 +73,14 @@ describe('example-subscription-web-app', () => {
     req.filename = '/src/www/user-creates-account-select-plan.test.js'
     req.screenshots = [
       { click: '/account/register' },
-      { 
-        fill: '#submit-form', 
+      {
+        fill: '#submit-form',
         body: {
           username: 'FirstUser',
           password: '12345678',
           confirm: '12345678'
         },
         waitAfter: async (page) => {
-          console.log('wait for plan selection form')
           while (true) {
             try {
               await page.waitForNavigation()
@@ -93,7 +97,7 @@ describe('example-subscription-web-app', () => {
         }
       }
     ]
-    const result = await req.post() 
+    const result = await req.post()
     assert.strictEqual(result.redirect, '/home')
   })
 
@@ -105,15 +109,14 @@ describe('example-subscription-web-app', () => {
     req.filename = '/src/www/user-selects-plan-enter-billing.test.js'
     req.screenshots = [
       { click: '/account/register' },
-      { 
-        fill: '#submit-form', 
+      {
+        fill: '#submit-form',
         body: {
           username: 'FirstUser',
           password: '12345678',
           confirm: '12345678'
         },
         waitAfter: async (page) => {
-          console.log('wait for plan selection form')
           while (true) {
             try {
               await page.waitForNavigation()
@@ -128,7 +131,7 @@ describe('example-subscription-web-app', () => {
             await page.waitFor(100)
           }
         }
-      },      
+      },
       {
         fill: '#submit-form',
         body: {
@@ -152,7 +155,7 @@ describe('example-subscription-web-app', () => {
         }
       }
     ]
-    const result = await req.post() 
+    const result = await req.post()
     assert.strictEqual(result.redirect, '/home')
   })
 
@@ -165,15 +168,14 @@ describe('example-subscription-web-app', () => {
     req.filename = '/src/www/user-creates-account-and-subscription.test.js'
     req.screenshots = [
       { click: '/account/register' },
-      { 
-        fill: '#submit-form', 
+      {
+        fill: '#submit-form',
         body: {
           username: 'FirstUser',
           password: '12345678',
           confirm: '12345678'
         },
         waitAfter: async (page) => {
-          console.log('wait for plan selection form')
           while (true) {
             try {
               await page.waitForNavigation()
@@ -188,7 +190,7 @@ describe('example-subscription-web-app', () => {
             await page.waitFor(100)
           }
         }
-      }, 
+      },
       {
         fill: '#submit-form',
         body: {
@@ -248,7 +250,7 @@ describe('example-subscription-web-app', () => {
             }
             await page.waitFor(100)
           }
-        },       
+        },
         waitAfter: async (page) => {
           while (true) {
             let frame
@@ -272,10 +274,9 @@ describe('example-subscription-web-app', () => {
         }
       }
     ]
-    const result = await req.post() 
+    const result = await req.post()
     assert.strictEqual(result.redirect, '/home')
   })
-
 
   it('user 1 cancels subscription', async () => {
     const administrator = await TestStripeAccounts.createOwnerWithPlan()
@@ -294,7 +295,7 @@ describe('example-subscription-web-app', () => {
       { click: `/account/subscriptions/cancel-subscription?subscriptionid=${user.subscription.id}` },
       { fill: '#submit-form' }
     ]
-    const result = await req.post() 
+    const result = await req.post()
     const doc = TestHelperSubscriptions.extractDoc(result.html)
     const messageContainer = doc.getElementById('message-container')
     const message = messageContainer.child[0]
@@ -324,8 +325,8 @@ describe('example-subscription-web-app', () => {
     req.account = user.account
     req.session = user.session
     req.filename = '/src/www/user-creates-post.test.js'
-    req.screenshots = [{ 
-      fill: '#post-creator', 
+    req.screenshots = [{
+      fill: '#post-creator',
       body: {
         'post-textarea': pasteText,
         documentid: 'readme.md',
@@ -333,7 +334,7 @@ describe('example-subscription-web-app', () => {
       }
     }]
     const result = await req.post()
-    // TODO: can't detect the rendered post 
+    // TODO: can't detect the rendered post
     assert.strictEqual(1, 1)
   })
 
@@ -387,16 +388,16 @@ describe('example-subscription-web-app', () => {
     req.session = user2.session
     req.filename = '/src/www/user-creates-shared-post.test.js'
     req.screenshots = [
-      { save: true }, 
-      { 
-        fill: '#post-creator', 
+      { save: true },
+      {
+        fill: '#post-creator',
         body: {
           'post-textarea': pasteText,
           documentid: 'readme.md',
           language: 'MarkDown',
           organization: 'My organization'
-      }
-    }]
+        }
+      }]
     req.waitFormComplete = async (page) => {
       while (true) {
         const frame = await page.frames().find(f => f.name() === 'application-iframe')
@@ -456,7 +457,7 @@ describe('example-subscription-web-app', () => {
           return
         }
         await page.waitFor(100)
-      } 
+      }
     }
     req.waitAfter = async (page) => {
       while (true) {
@@ -489,8 +490,8 @@ describe('example-subscription-web-app', () => {
     req2.filename = '/src/www/user-views-shared-post.test.js'
     req2.screenshots = [
       { save: true },
-      { 
-        click: '#organization-list-button', 
+      {
+        click: '#organization-list-button',
         waitAfter: async (page) => {
           while (true) {
             const frame = await page.frames().find(f => f.name() === 'application-iframe')
@@ -514,8 +515,8 @@ describe('example-subscription-web-app', () => {
           }
         }
       },
-      { 
-        click: '/document/readme.md', 
+      {
+        click: '/document/readme.md',
         waitAfter: async (page) => {
           while (true) {
             const frame = await page.frames().find(f => f.name() === 'application-iframe')
@@ -539,5 +540,3 @@ describe('example-subscription-web-app', () => {
     assert.strictEqual(1, 1)
   })
 })
-
-

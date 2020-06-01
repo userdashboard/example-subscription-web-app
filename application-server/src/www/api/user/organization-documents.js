@@ -22,5 +22,5 @@ module.exports = {
       }
     }
     throw new Error('invalid-organization')
-  } 
- }
+  }
+}
