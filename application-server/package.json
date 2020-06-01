@@ -13,7 +13,6 @@
   },
   "main": "haste",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
     "multiparty": "^4.2.1"
   },
   "devDependencies": {

@@ -1,5 +1,3 @@
-const bcrypt = require('./bcrypt.js')
-const crypto = require('crypto')
 const Document = require('./document.js')
 const fs = require('fs')
 const http = require('http')
@@ -38,24 +36,6 @@ module.exports = {
     }
   }
 }
-
-const compareDashboardHash = util.promisify((req, callback) => {
-  if (!req.headers['x-dashboard-server']) {
-    return callback(null, req)
-  }
-  if (req.headers['x-dashboard-server'] !== process.env.DASHBOARD_SERVER) {
-    return callback(null, req)
-  }
-  let expected
-  if (!req.headers['x-accountid']) {
-    expected = process.env.APPLICATION_SERVER_TOKEN
-  } else {
-    expected = `${process.env.APPLICATION_SERVER_TOKEN}/${req.headers['x-accountid']}/${req.headers['x-sessionid']}`
-  }
-  const sha = crypto.createHash('sha256')
-  const expectedHash = sha.update(expected).digest('hex')
-  return bcrypt.compare(expectedHash, req.headers['x-dashboard-token'], callback)
-})
 
 const parsePostData = util.promisify((req, callback) => {
   if (req.headers &&
@@ -129,11 +109,11 @@ function throw511 (req, res) {
   return throwError(req, res, 511)
 }
 
-function throwError(req, res, error) {
+function throwError (req, res, error) {
   if (req.urlPath.startsWith('/api/')) {
     res.setHeader('content-type', 'application/json; charset=utf-8')
     res.statusCode = error
-    return res.end(`{ "error": "An error ${error} ocurred" }`) 
+    return res.end(`{ "error": "An error ${error} ocurred" }`)
   }
   res.setHeader('content-type', 'text/html; charset=utf-8')
   res.statusCode = error
@@ -150,12 +130,13 @@ async function receiveRequest (req, res) {
     res.setHeader('content-type', 'text/html')
     return res.end(indexPage)
   }
-  if (req.urlPath === '/favicon.ico' || 
-      req.urlPath === '/robots.txt' || 
+  if (req.urlPath === '/favicon.ico' ||
+      req.urlPath === '/robots.txt' ||
       req.urlPath.startsWith('/public/')) {
     return staticFile(req, res)
   }
-  req.verified = await compareDashboardHash(req)
+  req.verified = req.headers['x-dashboard-server'] === process.env.DASHBOARD_SERVER &&
+                 req.headers['x-application-server-token'] === process.env.APPLICATION_SERVER_TOKEN
   if (!req.verified) {
     return throw500(req, res)
   }
@@ -187,7 +168,7 @@ async function receiveRequest (req, res) {
     if (req.memberships) {
       user.memberships = req.memberships
     }
-    let injectJS = [`window.user = ${JSON.stringify(user)}`]
+    const injectJS = [`window.user = ${JSON.stringify(user)}`]
     if (global.publicDomain) {
       injectJS.push(`window.publicDomain = "${global.publicDomain}"</script>`)
     }
@@ -207,13 +188,13 @@ async function receiveRequest (req, res) {
       user.memberships = req.memberships || []
     }
     const postid = req.urlPath.substring('/document/'.length)
-    let injectJS = [`window.user = ${JSON.stringify(user)}`]
+    const injectJS = [`window.user = ${JSON.stringify(user)}`]
     let post
     try {
       post = await Document.load(postid)
     } catch (error) {
     }
-    if (!post || !public) {
+    if (!post || !post.public) {
       return throw404(req, res)
     }
     injectJS.push(`window.post = ${JSON.stringify(post)}`)
