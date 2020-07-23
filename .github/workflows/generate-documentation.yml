@@ -1,0 +1,70 @@
+name: generate-documentation
+
+on: [push]
+
+jobs:
+  generate-documentation:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - uses: zhulik/redis-action@1.1.0
+      with:
+        redis version: "5"
+        number of databases: 1
+    - name: Set up project
+      run: |
+        git config --global user.name "${{ secrets.NAME }}"
+        git config --global user.email "${{ secrets.EMAIL }}"
+        cd application-server
+        npm install
+        cd ../dashboard-server
+        npm install
+        npm install faker puppeteer@2.1.1 @userdashboard/storage-redis
+        npm install -g mocha
+        echo "global.applicationPath = __dirname" > temp.js
+        echo "require('./test-helper.js')" >> temp.js
+    - name: Generate documentation
+      run: |
+        mocha --file temp.js --bail --exit --full-trace --timeout 90000000 screenshots.test.js
+        mocha --grep returns --retries 2 --file temp.js --bail --exit --full-trace --recursive --timeout 90000000 "./node_modules/@userdashboard/**/*.test.js"
+        mocha --grep screenshots --retries 2 --file temp.js --bail --exit --full-trace --recursive --timeout 90000000 "./node_modules/@userdashboard/**/*.test.js"
+      working-directory: "./dashboard-server"
+      env:
+        NODE_ENV: testing
+        FAST_START: true
+        DASHBOARD_SERVER: "http://localhost:9000"
+        PORT: 9000
+        DOMAIN: "localhost"
+        GENERATE_SITEMAP_TXT: false
+        GENERATE_API_TXT: false   
+        GENERATE_RESPONSE: true
+        GENERATE_SCREENSHOTS: true
+        RESPONSE_PATH: "/home/runner/work/example-subscription-web-app/example-subscription-web-app/documentation/example-subscription-web-app"
+        SCREENSHOT_PATH: "/home/runner/work/example-subscription-web-app/example-subscription-web-app/documentation/screenshots/example-subscription-web-app"
+        SCREENSHOT_LANGUAGES: "en,es,af,bg,pl,tr,hu,vi"
+        APPLICATION_SERVER: "http://localhost:9213"
+        APPLICATION_SERVER_PORT: 9213
+        APPLICATION_SERVER_TOKEN: "this is the token"
+        START_APPLICATION_SERVER: "false"
+        STORAGE: "@userdashboard/storage-redis"
+        REDIS_URL: "redis://localhost:6379"
+        LOG_LEVEL: "info,error,warn,log"
+        STRIPE_KEY: ${{ secrets.STRIPE_KEY }}
+        STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
+        STRIPE_JS: false
+        NGROK: true
+        SUBSCRIPTIONS_WEBHOOK_ENDPOINT_SECRET: "replaced-at-runtime"
+    - name: Deploy to Github Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        external_repository: "userdashboard/userdashboard.github.io"
+        personal_token: ${{ secrets.DOCUMENTATION_PAT }}
+        publish_dir: documentation
+        publish_branch: master
+        keep_files: true
