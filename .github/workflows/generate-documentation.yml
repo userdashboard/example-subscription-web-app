@@ -25,7 +25,7 @@ jobs:
         npm install
         cd ../dashboard-server
         npm install
-        npm install faker puppeteer@2.1.1 @userdashboard/storage-redis
+        npm install ngrok faker puppeteer@2.1.1 @userdashboard/storage-redis
         npm install -g mocha
         echo "global.applicationPath = __dirname" > temp.js
         echo "require('./test-helper.js')" >> temp.js
