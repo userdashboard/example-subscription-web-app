@@ -1,17 +1,15 @@
-@userdashboard/dashboard 1.0.157
-http://localhost:8300 (dashboard)
-http://localhost:8700 (application)
+@userdashboard/dashboard 1.0.283
+http://localhost:9001
 
 Administrator menu:
-/administrator/subscriptions "Stripe Subscriptions module"
-/administrator/organizations "Organizations module"
+organizations/src/www/administrator/organizations "Organizations module"
+stripe-subscriptions/src/www/administrator/subscriptions "Stripe Subscriptions <span translate="yes">module</span>"
 /administrator "Dashboard administration"
 
 Account menu:
-/account/subscriptions "Subscriptions & billing"
-/account/organizations "Manage organizations"
+organizations/src/www/account/organizations "Manage organizations"
+stripe-subscriptions/src/www/account/subscriptions "Subscriptions and billing"
 /account "My account"
-/account/signout "Sign out"
 
 Special HTML files:
 @userdashboard/dashboard/src/template.html
@@ -19,20 +17,19 @@ Special HTML files:
 @userdashboard/dashboard/src/redirect.html
 
 Dashboard modules:
-@userdashboard/organizations (1.0.69)
-@userdashboard/stripe-subscriptions (1.0.25)
-@userdashboard/maxmind-geoip (1.0.49)
+@userdashboard/organizations (1.0.115)
+@userdashboard/stripe-subscriptions (1.0.63)
+@userdashboard/maxmind-geoip (1.0.70)
 
 Content handlers:
 @userdashboard/stripe-subscriptions/src/content/content-security-policy.js
 
 Server handlers:
-@userdashboard/stripe-subscriptions/src/server/bind-ip.js
 @userdashboard/stripe-subscriptions/src/server/bind-stripekey.js
 @userdashboard/stripe-subscriptions/src/server/require-payment-confirmation.js
 @userdashboard/stripe-subscriptions/src/server/require-payment.js
 @userdashboard/stripe-subscriptions/src/server/require-subscription.js
-@userdashboard/maxmind-geoip
+@userdashboard/maxmind-geoip/src/server/bind-country.js
 /src/server/allow-api-requests.js
 
 Proxy handlers:
@@ -55,6 +52,7 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /account/edit-profile                                                                GET POST        @userdashboard/dashboard                @userdashboard/dashboard               
 /account/end-all-sessions                                                            GET POST        @userdashboard/dashboard                @userdashboard/dashboard               
 /account/end-session                                                                 GET POST        @userdashboard/dashboard                @userdashboard/dashboard               
+/account/language                                                                    GET POST        @userdashboard/dashboard                @userdashboard/dashboard               
 /account/organizations                                                               GET             @userdashboard/organizations            @userdashboard/organizations           
 /account/organizations/accept-invitation                                             GET POST        @userdashboard/organizations            @userdashboard/organizations           
 /account/organizations/create-invitation                                             GET POST        @userdashboard/organizations            @userdashboard/organizations           
@@ -80,7 +78,6 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /account/reset-code                                                                  GET             @userdashboard/dashboard                @userdashboard/dashboard               
 /account/reset-codes                                                                 GET             @userdashboard/dashboard                @userdashboard/dashboard               
 /account/restore-account                                           GUEST  FULLSCREEN GET POST        @userdashboard/dashboard                @userdashboard/dashboard               
-/account/select-language                                                             GET                                                     @userdashboard/dashboard               
 /account/session                                                                     GET             @userdashboard/dashboard                @userdashboard/dashboard               
 /account/sessions                                                                    GET             @userdashboard/dashboard                @userdashboard/dashboard               
 /account/set-default-profile                                                         GET POST        @userdashboard/dashboard                @userdashboard/dashboard               
@@ -192,12 +189,6 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /administrator/subscriptions/unpublish-product                                       GET POST        @userdashboard/stripe-subscriptions     @userdashboard/stripe-subscriptions    
 /administrator/transfer-ownership                                                    GET POST        @userdashboard/dashboard                @userdashboard/dashboard               
 /api/administrator/account                                                           GET             @userdashboard/dashboard                                                       
-/api/administrator/account-profiles                                                  GET             @userdashboard/dashboard                                                       
-/api/administrator/account-profiles-count                                            GET             @userdashboard/dashboard                                                       
-/api/administrator/account-reset-codes                                               GET             @userdashboard/dashboard                                                       
-/api/administrator/account-reset-codes-count                                         GET             @userdashboard/dashboard                                                       
-/api/administrator/account-sessions                                                  GET             @userdashboard/dashboard                                                       
-/api/administrator/account-sessions-count                                            GET             @userdashboard/dashboard                                                       
 /api/administrator/accounts                                                          GET             @userdashboard/dashboard                                                       
 /api/administrator/accounts-count                                                    GET             @userdashboard/dashboard                                                       
 /api/administrator/administrator-accounts                                            GET             @userdashboard/dashboard                                                       
@@ -206,12 +197,6 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /api/administrator/delete-account                                                    DELETE          @userdashboard/dashboard                                                       
 /api/administrator/deleted-accounts                                                  GET             @userdashboard/dashboard                                                       
 /api/administrator/deleted-accounts-count                                            GET             @userdashboard/dashboard                                                       
-/api/administrator/organizations/account-invitations                                 GET             @userdashboard/organizations                                                   
-/api/administrator/organizations/account-invitations-count                           GET             @userdashboard/organizations                                                   
-/api/administrator/organizations/account-memberships                                 GET             @userdashboard/organizations                                                   
-/api/administrator/organizations/account-memberships-count                           GET             @userdashboard/organizations                                                   
-/api/administrator/organizations/account-organizations                               GET             @userdashboard/organizations                                                   
-/api/administrator/organizations/account-organizations-count                         GET             @userdashboard/organizations                                                   
 /api/administrator/organizations/invitation                                          GET             @userdashboard/organizations                                                   
 /api/administrator/organizations/invitations                                         GET             @userdashboard/organizations                                                   
 /api/administrator/organizations/invitations-count                                   GET             @userdashboard/organizations                                                   
@@ -219,10 +204,6 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /api/administrator/organizations/memberships                                         GET             @userdashboard/organizations                                                   
 /api/administrator/organizations/memberships-count                                   GET             @userdashboard/organizations                                                   
 /api/administrator/organizations/organization                                        GET             @userdashboard/organizations                                                   
-/api/administrator/organizations/organization-invitations                            GET             @userdashboard/organizations                                                   
-/api/administrator/organizations/organization-invitations-count                      GET             @userdashboard/organizations                                                   
-/api/administrator/organizations/organization-memberships                            GET             @userdashboard/organizations                                                   
-/api/administrator/organizations/organization-memberships-count                      GET             @userdashboard/organizations                                                   
 /api/administrator/organizations/organizations                                       GET             @userdashboard/organizations                                                   
 /api/administrator/organizations/organizations-count                                 GET             @userdashboard/organizations                                                   
 /api/administrator/profile                                                           GET             @userdashboard/dashboard                                                       
@@ -303,6 +284,7 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /api/administrator/subscriptions/update-coupon                                       PATCH           @userdashboard/stripe-subscriptions                                            
 /api/administrator/subscriptions/update-plan                                         PATCH           @userdashboard/stripe-subscriptions                                            
 /api/administrator/subscriptions/update-product                                      PATCH           @userdashboard/stripe-subscriptions                                            
+/api/administrator/subscriptions/usage-record-summaries                              GET             @userdashboard/stripe-subscriptions                                            
 /api/user/account                                                                    GET             @userdashboard/dashboard                                                       
 /api/user/create-account                                           GUEST             POST            @userdashboard/dashboard                                                       
 /api/user/create-profile                                                             POST            @userdashboard/dashboard                                                       
@@ -326,11 +308,7 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /api/user/organizations/open-invitation                                              GET             @userdashboard/organizations                                                   
 /api/user/organizations/open-invitation-organization                                 GET             @userdashboard/organizations                                                   
 /api/user/organizations/organization                                                 GET             @userdashboard/organizations                                                   
-/api/user/organizations/organization-invitations                                     GET             @userdashboard/organizations                                                   
-/api/user/organizations/organization-invitations-count                               GET             @userdashboard/organizations                                                   
 /api/user/organizations/organization-membership                                      GET             @userdashboard/organizations                                                   
-/api/user/organizations/organization-memberships                                     GET             @userdashboard/organizations                                                   
-/api/user/organizations/organization-memberships-count                               GET             @userdashboard/organizations                                                   
 /api/user/organizations/organizations                                                GET             @userdashboard/organizations                                                   
 /api/user/organizations/organizations-count                                          GET             @userdashboard/organizations                                                   
 /api/user/organizations/set-organization-owner                                       PATCH           @userdashboard/organizations                                                   
@@ -348,6 +326,7 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /api/user/sessions                                                                   GET             @userdashboard/dashboard                                                       
 /api/user/sessions-count                                                             GET             @userdashboard/dashboard                                                       
 /api/user/set-account-deleted                                                        PATCH           @userdashboard/dashboard                                                       
+/api/user/set-account-language                                                       PATCH           @userdashboard/dashboard                                                       
 /api/user/set-account-password                                                       PATCH           @userdashboard/dashboard                                                       
 /api/user/set-account-profile                                                        PATCH           @userdashboard/dashboard                                                       
 /api/user/set-account-username                                                       PATCH           @userdashboard/dashboard                                                       
@@ -364,6 +343,7 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /api/user/subscriptions/create-refund-request                                        POST            @userdashboard/stripe-subscriptions                                            
 /api/user/subscriptions/create-setup-intent                                          POST            @userdashboard/stripe-subscriptions                                            
 /api/user/subscriptions/create-subscription                                          POST            @userdashboard/stripe-subscriptions                                            
+/api/user/subscriptions/create-usage-record                                          POST            @userdashboard/stripe-subscriptions                                            
 /api/user/subscriptions/customer                                                     GET             @userdashboard/stripe-subscriptions                                            
 /api/user/subscriptions/customers                                                    GET             @userdashboard/stripe-subscriptions                                            
 /api/user/subscriptions/customers-count                                              GET             @userdashboard/stripe-subscriptions                                            
@@ -408,6 +388,7 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /api/user/subscriptions/subscriptions                                                GET             @userdashboard/stripe-subscriptions                                            
 /api/user/subscriptions/subscriptions-count                                          GET             @userdashboard/stripe-subscriptions                                            
 /api/user/subscriptions/upcoming-invoice                                             GET             @userdashboard/stripe-subscriptions                                            
+/api/user/subscriptions/usage-record-summaries                                       GET             @userdashboard/stripe-subscriptions                                            
 /api/user/update-profile                                                             PATCH           @userdashboard/dashboard                                                       
 /home                                                                                GET                                                     @userdashboard/maxmind-geoip           
 /webhooks/subscriptions/index-subscription-data                    GUEST             POST            @userdashboard/stripe-subscriptions                                            
