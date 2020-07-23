@@ -4,7 +4,7 @@ global.applicationPath = __dirname
 const fs = require('fs')
 const pasteText = fs.readFileSync('./node_modules/@userdashboard/dashboard/readme.md').toString()
 let applicationServer
-const TestHelperSubscriptions = require('@userdashboard/stripe-subscriptions/test-helper.js')
+const TestHelper = require('./test-helper.js')
 const TestHelperOrganizations = require('@userdashboard/stripe-subscriptions/test-helper.js')
 const TestStripeAccounts = require('@userdashboard/stripe-subscriptions/test-stripe-accounts.js')
 
@@ -26,8 +26,8 @@ after(async () => {
 
 describe('example-subscription-web-app', () => {
   it('administrator creates product and plan (screenshots)', async () => {
-    const owner = await TestHelperSubscriptions.createOwner()
-    const req = TestHelperSubscriptions.createRequest('/home')
+    const owner = await TestHelper.createOwner()
+    const req = TestHelper.createRequest('/home')
     req.account = owner.account
     req.session = owner.session
     req.filename = '/src/www/administrator-creates-product-plan.test.js'
@@ -61,15 +61,15 @@ describe('example-subscription-web-app', () => {
       { click: '/administrator/subscriptions/publish-plan' },
       { fill: '#submit-form' }
     ]
-    const result = await req.post()
+    await req.post()
+    assert.strictEqual(1, 1)
   })
 
   it('user 1 registers and must select plan', async () => {
-    const administrator = await TestStripeAccounts.createOwnerWithPlan()
+    await TestStripeAccounts.createOwnerWithPlan()
     global.stripeJS = 3
     global.requireSubscription = true
-    const userIdentity = TestHelperSubscriptions.nextIdentity()
-    const req = TestHelperSubscriptions.createRequest('/')
+    const req = TestHelper.createRequest('/')
     req.filename = '/src/www/user-creates-account-select-plan.test.js'
     req.screenshots = [
       { click: '/account/register' },
@@ -105,7 +105,7 @@ describe('example-subscription-web-app', () => {
     const administrator = await TestStripeAccounts.createOwnerWithPlan()
     global.stripeJS = 3
     global.requireSubscription = true
-    const req = TestHelperSubscriptions.createRequest('/')
+    const req = TestHelper.createRequest('/')
     req.filename = '/src/www/user-selects-plan-enter-billing.test.js'
     req.screenshots = [
       { click: '/account/register' },
@@ -163,8 +163,8 @@ describe('example-subscription-web-app', () => {
     const administrator = await TestStripeAccounts.createOwnerWithPlan()
     global.stripeJS = 3
     global.requireSubscription = true
-    const userIdentity = TestHelperSubscriptions.nextIdentity()
-    const req = TestHelperSubscriptions.createRequest('/')
+    const userIdentity = TestHelper.nextIdentity()
+    const req = TestHelper.createRequest('/')
     req.filename = '/src/www/user-creates-account-and-subscription.test.js'
     req.screenshots = [
       { click: '/account/register' },
@@ -282,8 +282,8 @@ describe('example-subscription-web-app', () => {
     const administrator = await TestStripeAccounts.createOwnerWithPlan()
     global.requireSubscription = true
     const user = await TestStripeAccounts.createUserWithPaymentMethod()
-    await TestHelperSubscriptions.createSubscription(user, administrator.plan.id)
-    const req = TestHelperSubscriptions.createRequest('/home')
+    await TestHelper.createSubscription(user, administrator.plan.id)
+    const req = TestHelper.createRequest('/home')
     req.account = user.account
     req.session = user.session
     req.filename = '/src/www/user-cancels-subscription.test.js'
@@ -296,15 +296,15 @@ describe('example-subscription-web-app', () => {
       { fill: '#submit-form' }
     ]
     const result = await req.post()
-    const doc = TestHelperSubscriptions.extractDoc(result.html)
+    const doc = TestHelper.extractDoc(result.html)
     const messageContainer = doc.getElementById('message-container')
     const message = messageContainer.child[0]
     assert.strictEqual(message.attr.template, 'success')
   })
 
   it('user 1 creates post', async () => {
-    const user = await TestHelperSubscriptions.createUser()
-    const req = TestHelperSubscriptions.createRequest('/home')
+    const user = await TestHelper.createUser()
+    const req = TestHelper.createRequest('/home')
     req.waitFormComplete = async (page) => {
       while (true) {
         const frame = await page.frames().find(f => f.name() === 'application-iframe')
@@ -333,14 +333,14 @@ describe('example-subscription-web-app', () => {
         language: 'MarkDown'
       }
     }]
-    const result = await req.post()
+    await req.post()
     // TODO: can't detect the rendered post
     assert.strictEqual(1, 1)
   })
 
   it('user 1 creates organization', async () => {
-    const user = await TestHelperSubscriptions.createUser()
-    const req = TestHelperSubscriptions.createRequest('/home')
+    const user = await TestHelper.createUser()
+    const req = TestHelper.createRequest('/home')
     req.account = user.account
     req.session = user.session
     req.filename = '/src/www/user-creates-organization.test.js'
@@ -363,10 +363,10 @@ describe('example-subscription-web-app', () => {
   })
 
   it('user 2 creates shared post', async () => {
-    const user = await TestHelperSubscriptions.createUser()
+    const user = await TestHelper.createUser()
     global.userProfileFields = ['display-name', 'display-email']
     global.membershipProfileFields = ['display-name', 'display-email']
-    await TestHelperSubscriptions.createProfile(user, {
+    await TestHelper.createProfile(user, {
       'display-name': user.profile.firstName,
       'display-email': user.profile.contactEmail
     })
@@ -376,14 +376,14 @@ describe('example-subscription-web-app', () => {
       profileid: user.profile.profileid
     })
     await TestHelperOrganizations.createInvitation(user)
-    const user2 = await TestHelperSubscriptions.createUser()
+    const user2 = await TestHelper.createUser()
     global.userProfileFields = ['display-name', 'display-email']
-    await TestHelperSubscriptions.createProfile(user2, {
+    await TestHelper.createProfile(user2, {
       'display-name': user2.profile.firstName,
       'display-email': user2.profile.contactEmail
     })
     await TestHelperOrganizations.acceptInvitation(user2, user)
-    const req = TestHelperSubscriptions.createRequest('/home')
+    const req = TestHelper.createRequest('/home')
     req.account = user2.account
     req.session = user2.session
     req.filename = '/src/www/user-creates-shared-post.test.js'
@@ -420,10 +420,10 @@ describe('example-subscription-web-app', () => {
   })
 
   it('user 1 views shared post', async () => {
-    const user = await TestHelperSubscriptions.createUser()
+    const user = await TestHelper.createUser()
     global.userProfileFields = ['display-name', 'display-email']
     global.membershipProfileFields = ['display-name', 'display-email']
-    await TestHelperSubscriptions.createProfile(user, {
+    await TestHelper.createProfile(user, {
       'display-name': user.profile.firstName,
       'display-email': user.profile.contactEmail
     })
@@ -433,7 +433,7 @@ describe('example-subscription-web-app', () => {
       profileid: user.profile.profileid
     })
     await TestHelperOrganizations.createInvitation(user)
-    const req = TestHelperSubscriptions.createRequest('/home')
+    const req = TestHelper.createRequest('/home')
     req.account = user.account
     req.session = user.session
     req.body = {
@@ -477,14 +477,14 @@ describe('example-subscription-web-app', () => {
       }
     }
     await req.post()
-    const user2 = await TestHelperSubscriptions.createUser()
+    const user2 = await TestHelper.createUser()
     global.userProfileFields = ['display-name', 'display-email']
-    await TestHelperSubscriptions.createProfile(user2, {
+    await TestHelper.createProfile(user2, {
       'display-name': user2.profile.firstName,
       'display-email': user2.profile.contactEmail
     })
     await TestHelperOrganizations.acceptInvitation(user2, user)
-    const req2 = TestHelperSubscriptions.createRequest('/home')
+    const req2 = TestHelper.createRequest('/home')
     req2.account = user2.account
     req2.session = user2.session
     req2.filename = '/src/www/user-views-shared-post.test.js'
