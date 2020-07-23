@@ -59,7 +59,7 @@ jobs:
         STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
         STRIPE_JS: false
         NGROK: true
-        SUBSCRIPTIONS_WEBHOOK_ENDPOINT_SECRET: "replaced-at-runtime"
+        SUBSCRIPTION_WEBHOOK_ENDPOINT_SECRET: "replaced-at-runtime"
     - name: Deploy to Github Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
