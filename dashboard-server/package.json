@@ -13,7 +13,7 @@
     "@userdashboard/stripe-subscriptions": "^1.0.37"
   },
   "dashboard": {
-    "title": "Hastebin",
+    "title": "Example Subscription Web App",
     "modules": [
       "@userdashboard/organizations",
       "@userdashboard/stripe-subscriptions"

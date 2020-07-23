@@ -47,7 +47,7 @@ jobs:
         GENERATE_SCREENSHOTS: true
         RESPONSE_PATH: "/home/runner/work/example-subscription-web-app/example-subscription-web-app/documentation/example-subscription-web-app"
         SCREENSHOT_PATH: "/home/runner/work/example-subscription-web-app/example-subscription-web-app/documentation/screenshots/example-subscription-web-app"
-        SCREENSHOT_LANGUAGES: "en,es,af,bg,pl,tr,hu,vi"
+        SCREENSHOT_LANGUAGES: "en"
         APPLICATION_SERVER: "http://localhost:9213"
         APPLICATION_SERVER_PORT: 9213
         APPLICATION_SERVER_TOKEN: "this is the token"
