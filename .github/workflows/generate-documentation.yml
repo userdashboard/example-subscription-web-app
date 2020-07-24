@@ -60,6 +60,9 @@ jobs:
         STRIPE_JS: false
         NGROK: true
         SUBSCRIPTION_WEBHOOK_ENDPOINT_SECRET: "replaced-at-runtime"
+        REQUIRE_SUBSCRIPTION: true
+        REQUIRE_PAYMENT: true
+        REQUIRE_PAYMENT_AUTHORIZATION: true
     - name: Deploy to Github Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
