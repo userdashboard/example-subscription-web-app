@@ -1,5 +1,6 @@
 @userdashboard/dashboard 1.0.283
-http://localhost:9001
+http://localhost:9001 (dashboard)
+http://localhost:8700 (application)
 
 Administrator menu:
 organizations/src/www/administrator/organizations "Organizations module"
@@ -39,7 +40,6 @@ Proxy handlers:
 /src/proxy/x-subscriptions.js
 
 URL -------------------------------------------------------------- AUTH - TEMPLATE - HTTP REQUESTS - NODEJS -------------------------------- HTML ----------------------------------
-/                                                                  GUEST  FULLSCREEN GET                                                     @userdashboard/maxmind-geoip           
 /account                                                                             GET             @userdashboard/dashboard                @userdashboard/dashboard               
 /account/change-password                                                             GET POST        @userdashboard/dashboard                @userdashboard/dashboard               
 /account/change-username                                                             GET POST        @userdashboard/dashboard                @userdashboard/dashboard               
@@ -390,5 +390,4 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /api/user/subscriptions/upcoming-invoice                                             GET             @userdashboard/stripe-subscriptions                                            
 /api/user/subscriptions/usage-record-summaries                                       GET             @userdashboard/stripe-subscriptions                                            
 /api/user/update-profile                                                             PATCH           @userdashboard/dashboard                                                       
-/home                                                                                GET                                                     @userdashboard/maxmind-geoip           
 /webhooks/subscriptions/index-subscription-data                    GUEST             POST            @userdashboard/stripe-subscriptions                                            

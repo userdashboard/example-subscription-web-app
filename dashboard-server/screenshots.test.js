@@ -3,26 +3,9 @@ const assert = require('assert')
 global.applicationPath = __dirname
 const fs = require('fs')
 const pasteText = fs.readFileSync('./node_modules/@userdashboard/dashboard/readme.md').toString()
-let applicationServer
 const TestHelper = require('./test-helper.js')
 const TestHelperOrganizations = require('@userdashboard/stripe-subscriptions/test-helper.js')
 const TestStripeAccounts = require('@userdashboard/stripe-subscriptions/test-stripe-accounts.js')
-
-before(async () => {
-  applicationServer = require('../application-server/main.js')
-  await applicationServer.start(process.env.APPLICATION_SERVER_PORT, global.dashboardServer)
-})
-
-beforeEach(async () => {
-  global.applicationServer = `http://localhost:${process.env.APPLICATION_SERVER_PORT}`
-})
-
-after(async () => {
-  if (applicationServer) {
-    await applicationServer.stop()
-    applicationServer = null
-  }
-})
 
 describe('example-subscription-web-app', () => {
   it('administrator creates product and plan (screenshots)', async () => {

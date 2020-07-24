@@ -135,8 +135,8 @@ async function receiveRequest (req, res) {
       req.urlPath.startsWith('/public/')) {
     return staticFile(req, res)
   }
-  req.verified = req.headers['x-dashboard-server'] === process.env.DASHBOARD_SERVER &&
-                 req.headers['x-application-server-token'] === process.env.APPLICATION_SERVER_TOKEN
+  req.verified = req.headers['x-dashboard-server'] === global.dashboardServer &&
+                 req.headers['x-application-server-token'] === global.applicationServerToken
   if (!req.verified) {
     return throw500(req, res)
   }
