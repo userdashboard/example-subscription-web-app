@@ -40,7 +40,6 @@ jobs:
         FAST_START: true
         DASHBOARD_SERVER: "http://localhost:9000"
         PORT: 9000
-        DOMAIN: "localhost"
         GENERATE_SITEMAP_TXT: false
         GENERATE_API_TXT: false   
         GENERATE_RESPONSE: true
@@ -63,6 +62,7 @@ jobs:
         REQUIRE_SUBSCRIPTION: true
         REQUIRE_PAYMENT: true
         REQUIRE_PAYMENT_AUTHORIZATION: true
+        DISABLE_PAYOUT_TESTS: true
     - name: Deploy to Github Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
