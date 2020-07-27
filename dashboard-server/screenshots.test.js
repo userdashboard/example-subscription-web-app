@@ -257,11 +257,11 @@ describe('example-subscription-web-app', () => {
         }
       }
     ]
-    const result = await req.post()
+    await req.post()
     assert.strictEqual(1, 1)
   })
 
- it('user 1 cancels subscription', async () => {
+  it('user 1 cancels subscription', async () => {
     const administrator = await TestStripeAccounts.createOwnerWithPlan({ amount: 1000 })
     const user = await TestStripeAccounts.createUserWithPaymentMethod()
     await TestHelper.setupWebhook()
@@ -279,7 +279,7 @@ describe('example-subscription-web-app', () => {
       { click: `/account/subscriptions/cancel-subscription?subscriptionid=${user.subscription.id}` },
       { fill: '#submit-form' }
     ]
-    const result = await req.post()
+    await req.post()
     assert.strictEqual(1, 1)
   })
 
@@ -424,7 +424,9 @@ describe('example-subscription-web-app', () => {
       organization: 'My organization'
     }
     req.waitBefore = async (page) => {
+      console.log(1)
       while (true) {
+        console.log(2)
         const frame = await page.frames().find(f => f.name() === 'application-iframe')
         if (!frame) {
           await page.waitFor(100)
@@ -441,7 +443,9 @@ describe('example-subscription-web-app', () => {
       }
     }
     req.waitAfter = async (page) => {
+      console.log(3)
       while (true) {
+        console.log(4)
         const frame = await page.frames().find(f => f.name() === 'application-iframe')
         if (!frame) {
           await page.waitFor(100)
@@ -474,7 +478,9 @@ describe('example-subscription-web-app', () => {
       {
         click: '#organization-list-button',
         waitAfter: async (page) => {
+          console.log(5)
           while (true) {
+            console.log(6)
             const frame = await page.frames().find(f => f.name() === 'application-iframe')
             if (!frame) {
               await page.waitFor(100)
@@ -499,7 +505,9 @@ describe('example-subscription-web-app', () => {
       {
         click: '/document/readme.md',
         waitAfter: async (page) => {
+          console.log(7)
           while (true) {
+            console.log(8)
             const frame = await page.frames().find(f => f.name() === 'application-iframe')
             if (!frame) {
               await page.waitFor(100)
