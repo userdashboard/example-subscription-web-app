@@ -110,7 +110,7 @@ function loadDocument (event) {
   event.preventDefault()
   var link = event.target
   var path = '/api/user/document?documentid=' + link.innerHTML
-  elements['post-preview'].firstChild.innerHTML = ''
+  elements['post-preview'].innerHTML = ''
   elements['line-numbers'].innerHTML = ''
   return send(path, null, 'GET', function (error, result) {
     if (error) {
@@ -241,7 +241,7 @@ function showPostContents (post) {
   } catch (error) {
     high = window.hljs.highlightAuto(post.document)
   }
-  elements['post-preview'].firstChild.innerHTML = high.value
+  elements['post-preview'].innerHTML = high.value
   elements['post-preview'].focus()
   addLineNumbers(post.document.split('\n').length)
   return showContent('post-content')
