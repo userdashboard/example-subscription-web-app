@@ -212,7 +212,7 @@ async function receiveRequest (req, res) {
       return throw500(req, res)
     }
   }
-  if (req.method === 'POST ' || req.method === 'PATCH' || req.method === 'PUT' || req.method === 'DELETE') {
+  if (req.method === 'POST' || req.method === 'PATCH' || req.method === 'PUT' || req.method === 'DELETE') {
     if (req.headers['content-type'] && req.headers['content-type'].indexOf('multipart/form-data;') > -1) {
       try {
         req.body = await parseMultiPartData(req)
