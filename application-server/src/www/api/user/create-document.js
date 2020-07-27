@@ -32,7 +32,7 @@ module.exports = {
         }
       }
       try {
-        const existing = await load(req.body.documentid)
+        const existing = await Document.load(req.body.documentid)
         if (existing) {
           throw new Error('duplicate-documentid')
         }
