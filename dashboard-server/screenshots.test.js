@@ -401,7 +401,10 @@ describe('example-subscription-web-app', () => {
   })
 
   it('user 1 views shared post', async () => {
-    const user = await TestHelper.createUser()
+    const owner = await TestStripeAccounts.createOwnerWithPlan()
+    const user = await TestStripeAccounts.createUserWithPaymentMethod()
+    await TestHelper.setupWebhook()
+    await TestHelper.createSubscription(user, owner.plan.id)
     global.userProfileFields = ['display-name', 'display-email']
     global.membershipProfileFields = ['display-name', 'display-email']
     await TestHelper.createProfile(user, {
@@ -434,7 +437,7 @@ describe('example-subscription-web-app', () => {
         }
         const postCreator = await frame.evaluate(() => {
           var postCreator = document.getElementById('post-creator')
-          return postCreator.style.display
+          return postCreator ? postCreator.style.display : null
         })
         if (postCreator === 'block') {
           return
@@ -448,21 +451,24 @@ describe('example-subscription-web-app', () => {
         console.log(4)
         const frame = await page.frames().find(f => f.name() === 'application-iframe')
         if (!frame) {
+          console.log('skip1')
           await page.waitFor(100)
           continue
         }
         const postContent = await frame.evaluate(() => {
           var postContent = document.getElementById('post-content')
-          return postContent.style.display
+          return postContent ? postContent.style.display : null
         })
         if (postContent === 'block') {
           return
         }
+        console.log('skip2', postContent)
         await page.waitFor(100)
       }
     }
     await req.post()
-    const user2 = await TestHelper.createUser()
+    const user2 = await TestStripeAccounts.createUserWithPaymentMethod()
+    await TestHelper.createSubscription(user2, owner.plan.id)
     global.userProfileFields = ['display-name', 'display-email']
     await TestHelper.createProfile(user2, {
       'display-name': user2.profile.firstName,
