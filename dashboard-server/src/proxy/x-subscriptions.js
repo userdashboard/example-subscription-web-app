@@ -10,7 +10,7 @@ module.exports = async (req, proxyRequestOptions) => {
     all: true,
     accountid: req.account.accountid
   }
-  const subscriptions = await global.api.user.subscriptions.Subscriptions.get(req)
+  const subscriptions = req.proxySubscriptions = req.proxySubscriptions || await global.api.user.subscriptions.Subscriptions.get(req)
   if (subscriptions && subscriptions.length) {
     proxyRequestOptions.headers['x-subscriptions'] = JSON.stringify(subscriptions)
   }

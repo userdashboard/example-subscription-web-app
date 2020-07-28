@@ -10,7 +10,7 @@ module.exports = async (req, proxyRequestOptions) => {
     all: true,
     accountid: req.account.accountid
   }
-  const memberships = await global.api.user.organizations.Memberships.get(req)
+  const memberships = req.proxyMemberships = req.proxyMemberships || await global.api.user.organizations.Memberships.get(req)
   if (memberships && memberships.length) {
     proxyRequestOptions.headers['x-memberships'] = JSON.stringify(memberships)
   }
