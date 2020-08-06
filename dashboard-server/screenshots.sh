@@ -19,4 +19,4 @@ IP=0.0.0.0 \
 REQUIRE_SUBSCRIPTION=true \
 REQUIRE_PAYMENT=true \
 REQUIRE_PAYMENT_AUTHORIZATION=true \
-npm test
+mocha --grep screenshots --retries 2 --file temp.js --bail --exit --full-trace --recursive --timeout 90000000 "./node_modules/@userdashboard/**/*.test.js"
