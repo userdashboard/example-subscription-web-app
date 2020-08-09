@@ -11,7 +11,7 @@
   "dependencies": {
     "@userdashboard/dashboard": "^1.0.297",
     "@userdashboard/organizations": "^1.0.124",
-    "@userdashboard/stripe-subscriptions": "^1.0.68"
+    "@userdashboard/stripe-subscriptions": "^1.0.74"
   },
   "dashboard": {
     "title": "Example Subscription Web App",

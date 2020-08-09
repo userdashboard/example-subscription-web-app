@@ -1,6 +1,5 @@
-@userdashboard/dashboard 1.0.285
-http://localhost:9000 (dashboard)
-http://localhost:8700 (application)
+@userdashboard/dashboard 1.0.299
+http://localhost:9001
 
 Administrator menu:
 organizations/src/www/administrator/organizations "Organizations module"
@@ -18,9 +17,9 @@ Special HTML files:
 @userdashboard/dashboard/src/redirect.html
 
 Dashboard modules:
-@userdashboard/organizations (1.0.115)
-@userdashboard/stripe-subscriptions (1.0.63)
-@userdashboard/maxmind-geoip (1.0.70)
+@userdashboard/organizations (1.0.124)
+@userdashboard/stripe-subscriptions (1.0.68)
+@userdashboard/maxmind-geoip (1.0.73)
 
 Content handlers:
 @userdashboard/stripe-subscriptions/src/content/content-security-policy.js
@@ -40,6 +39,7 @@ Proxy handlers:
 /src/proxy/x-subscriptions.js
 
 URL -------------------------------------------------------------- AUTH - TEMPLATE - HTTP REQUESTS - NODEJS -------------------------------- HTML ----------------------------------
+/                                                                  GUEST  FULLSCREEN GET                                                     @userdashboard/maxmind-geoip           
 /account                                                                             GET             @userdashboard/dashboard                @userdashboard/dashboard               
 /account/change-password                                                             GET POST        @userdashboard/dashboard                @userdashboard/dashboard               
 /account/change-username                                                             GET POST        @userdashboard/dashboard                @userdashboard/dashboard               
@@ -390,4 +390,5 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /api/user/subscriptions/upcoming-invoice                                             GET             @userdashboard/stripe-subscriptions                                            
 /api/user/subscriptions/usage-record-summaries                                       GET             @userdashboard/stripe-subscriptions                                            
 /api/user/update-profile                                                             PATCH           @userdashboard/dashboard                                                       
+/home                                                                                GET                                                     @userdashboard/maxmind-geoip           
 /webhooks/subscriptions/index-subscription-data                    GUEST             POST            @userdashboard/stripe-subscriptions                                            
