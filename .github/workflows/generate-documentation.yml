@@ -28,6 +28,7 @@ jobs:
         npm install ngrok faker puppeteer@2.1.1 @userdashboard/storage-redis
         npm install -g mocha
         echo "global.applicationPath = __dirname" > temp.js
+        echo "require('./test-helper.js')" > temp.js
     - name: Generate documentation
       run: |
         mocha --file temp.js --bail --exit --full-trace --timeout 90000000 screenshots.test.js
