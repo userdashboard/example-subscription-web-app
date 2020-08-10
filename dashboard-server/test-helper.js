@@ -1,5 +1,6 @@
 /* eslint-env mocha */
 let applicationServer
+global.applicationPath = __dirname
 
 module.exports = require('@userdashboard/stripe-subscriptions/test-helper.js')
 
