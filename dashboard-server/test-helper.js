@@ -8,6 +8,7 @@ const setupBeforeWas = DashboardTestHelper.setupBefore
 const setupBeforeEachWas = DashboardTestHelper.setupBeforeEach
 DashboardTestHelper.setupBefore = setupBefore
 DashboardTestHelper.setupBeforeEach = setupBeforeEach
+module.exports = DashboardTestHelper
 
 async function setupBefore () {
   if (applicationServer) {
