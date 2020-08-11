@@ -9,9 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@userdashboard/dashboard": "^1.0.297",
+    "@userdashboard/dashboard": "^1.0.299",
     "@userdashboard/organizations": "^1.0.124",
-    "@userdashboard/stripe-subscriptions": "^1.0.74"
+    "@userdashboard/stripe-subscriptions": "^1.0.76"
   },
   "dashboard": {
     "title": "Example Subscription Web App",
