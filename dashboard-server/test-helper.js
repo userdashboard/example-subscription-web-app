@@ -3,13 +3,12 @@ let applicationServer
 global.applicationPath = __dirname
 
 require('@userdashboard/stripe-subscriptions/test-helper.js')
-const DashboardTestHelper = require('@userdashboard/stripe-subscriptions/test-helper.js')
 const SubscriptionTestHelper = require('@userdashboard/stripe-subscriptions/test-helper.js')
 
-const setupBeforeWas = DashboardTestHelper.setupBefore
-const setupBeforeEachWas = DashboardTestHelper.setupBeforeEach
-DashboardTestHelper.setupBefore = setupBefore
-DashboardTestHelper.setupBeforeEach = setupBeforeEach
+const setupBeforeWas = SubscriptionTestHelper.setupBefore
+const setupBeforeEachWas = SubscriptionTestHelper.setupBeforeEach
+SubscriptionTestHelper.setupBefore = setupBefore
+SubscriptionTestHelper.setupBeforeEach = setupBeforeEach
 module.exports = SubscriptionTestHelper
 
 async function setupBefore () {
