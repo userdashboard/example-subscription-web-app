@@ -2,20 +2,12 @@
 let applicationServer
 global.applicationPath = __dirname
 
-require('@userdashboard/stripe-subscriptions/test-helper.js')
-const SubscriptionTestHelper = require('@userdashboard/stripe-subscriptions/test-helper.js')
-
-const setupBeforeWas = SubscriptionTestHelper.setupBefore
-const setupBeforeEachWas = SubscriptionTestHelper.setupBeforeEach
-SubscriptionTestHelper.setupBefore = setupBefore
-SubscriptionTestHelper.setupBeforeEach = setupBeforeEach
-module.exports = SubscriptionTestHelper
+module.exports = require('@userdashboard/stripe-subscriptions/test-helper.js')
 
 async function setupBefore () {
   if (applicationServer) {
-    return setupBeforeWas()
+    return
   }
-  await setupBeforeWas()
   applicationServer = require('../application-server/main.js')
   await applicationServer.start(process.env.APPLICATION_SERVER_PORT, global.dashboardServer)
   global.applicationServer = `http://localhost:${process.env.APPLICATION_SERVER_PORT}`
@@ -23,7 +15,6 @@ async function setupBefore () {
 }
 
 async function setupBeforeEach () {
-  await setupBeforeEachWas()
   global.applicationServer = `http://localhost:${process.env.APPLICATION_SERVER_PORT}`
   global.applicationServerToken = process.env.APPLICATION_SERVER_TOKEN
 }
