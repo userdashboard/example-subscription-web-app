@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@userdashboard/dashboard": "^1.0.299",
+    "@userdashboard/dashboard": "^1.0.300",
     "@userdashboard/organizations": "^1.0.124",
     "@userdashboard/stripe-subscriptions": "^1.0.76"
   },
