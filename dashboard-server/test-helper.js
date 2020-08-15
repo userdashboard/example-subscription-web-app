@@ -2,7 +2,7 @@
 let applicationServer
 global.applicationPath = __dirname
 
-module.exports = require('@userdashboard/stripe-subscriptions/test-helper.js')
+const TestHelper = module.exports = require('@userdashboard/stripe-subscriptions/test-helper.js')
 TestHelper.defaultConfiguration.applicationServer = `http://localhost:${process.env.APPLICATION_SERVER_PORT}`
 TestHelper.defaultConfiguration.applicationServerPort = process.env.APPLICATION_SERVER_PORT
 TestHelper.defaultConfiguration.applicationServerToken = 'token'
