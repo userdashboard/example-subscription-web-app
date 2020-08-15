@@ -6,7 +6,7 @@ SubscriptionTestHelper.defaultConfiguration.applicationServer = `http://localhos
 SubscriptionTestHelper.defaultConfiguration.applicationServerPort = process.env.APPLICATION_SERVER_PORT
 SubscriptionTestHelper.defaultConfiguration.applicationServerToken = 'token'
 
-const TestHelper = module.exports = require('@userdashboard/dashboard/test-helper.js')
+const TestHelper = require('@userdashboard/dashboard/test-helper.js')
 TestHelper.defaultConfiguration.applicationServer = `http://localhost:${process.env.APPLICATION_SERVER_PORT}`
 TestHelper.defaultConfiguration.applicationServerPort = process.env.APPLICATION_SERVER_PORT
 TestHelper.defaultConfiguration.applicationServerToken = 'token'
