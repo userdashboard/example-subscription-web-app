@@ -1,24 +1,16 @@
 /* eslint-env mocha */
-let applicationServer
 global.applicationPath = __dirname
 
-const TestHelper = module.exports = require('@userdashboard/stripe-subscriptions/test-helper.js')
+const SubscriptionTestHelper = module.exports = require('@userdashboard/stripe-subscriptions/test-helper.js')
+SubscriptionTestHelper.defaultConfiguration.applicationServer = `http://localhost:${process.env.APPLICATION_SERVER_PORT}`
+SubscriptionTestHelper.defaultConfiguration.applicationServerPort = process.env.APPLICATION_SERVER_PORT
+SubscriptionTestHelper.defaultConfiguration.applicationServerToken = 'token'
+
+const TestHelper = module.exports = require('@userdashboard/dashboard/test-helper.js')
 TestHelper.defaultConfiguration.applicationServer = `http://localhost:${process.env.APPLICATION_SERVER_PORT}`
 TestHelper.defaultConfiguration.applicationServerPort = process.env.APPLICATION_SERVER_PORT
 TestHelper.defaultConfiguration.applicationServerToken = 'token'
 
-before(async () => {
-  if (applicationServer) {
-    return
-  }
-  applicationServer = require('../application-server/main.js')
-  await applicationServer.start(process.env.APPLICATION_SERVER_PORT, global.dashboardServer)
-})
-
-
-after(async () => {
-  if (applicationServer) {
-    await applicationServer.stop()
-    applicationServer = null
-  }
-})
+const applicationServer = require('../application-server/main.js')
+applicationServer.start(process.env.APPLICATION_SERVER_PORT, global.dashboardServer)
+after(applicationServer.stop)
