@@ -10,8 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "@userdashboard/dashboard": "^1.0.304",
-    "@userdashboard/organizations": "^1.0.127",
-    "@userdashboard/stripe-subscriptions": "^1.0.79"
+    "@userdashboard/organizations": "^1.0.128",
+    "@userdashboard/stripe-subscriptions": "^1.0.80"
   },
   "dashboard": {
     "title": "Example Subscription Web App",

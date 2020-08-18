@@ -1,10 +1,9 @@
 /* eslint-env mocha */
 global.applicationPath = __dirname
-global.testConfiguration = {
-  applicationServer: `http://localhost:${process.env.APPLICATION_SERVER_PORT}`,
-  applicationServerPort: process.env.APPLICATION_SERVER_PORT,
-  applicationServerToken: 'token'
-}
+global.testConfiguration = global.testConfiguration || {}
+global.testConfiguration.applicationServer = `http://localhost:${process.env.APPLICATION_SERVER_PORT}`
+global.testConfiguration.applicationServerPort = process.env.APPLICATION_SERVER_PORT
+global.testConfiguration.applicationServerToken = 'token'
 
 module.exports = require('@userdashboard/stripe-subscriptions/test-helper.js')
 
