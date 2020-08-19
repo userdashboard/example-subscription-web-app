@@ -7,7 +7,6 @@ global.testConfiguration.applicationServerToken = 'token'
 
 module.exports = require('@userdashboard/stripe-subscriptions/test-helper.js')
 
-
 const applicationServer = require('../application-server/main.js')
 applicationServer.start(process.env.APPLICATION_SERVER_PORT, global.dashboardServer)
 after(applicationServer.stop)

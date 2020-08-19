@@ -1,6 +1,5 @@
 /* eslint-env mocha */
 const assert = require('assert')
-global.applicationPath = __dirname
 const fs = require('fs')
 const pasteText = fs.readFileSync('./node_modules/@userdashboard/dashboard/readme.md').toString()
 const TestHelper = require('./test-helper.js')
