@@ -156,18 +156,23 @@ async function receiveRequest (req, res) {
   if (!req.accountid) {
     return throw511(req, res)
   }
+  const user = {
+    account: req.account || 'guest',
+    session: req.session || 'guest'
+  }
+  if (req.organizations) {
+    user.organizations = req.organizations || []
+  }
+  if (req.memberships) {
+    user.memberships = req.memberships || []
+  }
+  delete (user.account.passwordHash)
+  delete (user.account.usernameHash)
+  delete (user.session.sessionHash)
+  delete (user.session.sessionKey)
+  delete (user.session.sessionKeyNumber)
   if (req.urlPath === '/home') {
     res.setHeader('content-type', 'text/html')
-    const user = {
-      account: req.account,
-      session: req.session
-    }
-    if (req.organizations) {
-      user.organizations = req.organizations
-    }
-    if (req.memberships) {
-      user.memberships = req.memberships
-    }
     const injectJS = [`window.user = ${JSON.stringify(user)}`]
     if (global.publicDomain) {
       injectJS.push(`window.publicDomain = "${global.publicDomain}"</script>`)
@@ -177,16 +182,6 @@ async function receiveRequest (req, res) {
   }
   if (req.urlPath.startsWith('/document/')) {
     res.setHeader('content-type', 'text/html')
-    const user = {
-      account: req.account || 'guest',
-      session: req.session || 'guest'
-    }
-    if (req.organizations) {
-      user.organizations = req.organizations || []
-    }
-    if (req.memberships) {
-      user.memberships = req.memberships || []
-    }
     const postid = req.urlPath.substring('/document/'.length)
     const injectJS = [`window.user = ${JSON.stringify(user)}`]
     let post
