@@ -16,13 +16,13 @@
     "@userdashboard/dashboard": "^1.0.311",
     "@userdashboard/organizations": "^1.0.128",
     "@userdashboard/storage-redis": "^1.0.22",
-    "faker": "^4.1.0",
-    "puppeteer": "^2.1.1"
+    "@userdashboard/stripe-subscriptions": "^1.0.80"
   },
   "dashboard": {
     "title": "Example web app",
     "modules": [
-      "@userdashboard/organizations"
+      "@userdashboard/organizations",
+      "@userdashboard/stripe-subscriptions"
     ],
     "server": [
       "/src/server/allow-api-request.js"
