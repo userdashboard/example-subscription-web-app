@@ -3,8 +3,8 @@ body { width: 100%; height: 100%; min-height: 100%; background: #002B36; padding
 /* menu, previously icon links with hover descriptions */
 menu { margin: 0; padding: 0 }
 menu div { display: inline-block }
-menu button { margin: 0 0 0 2rem; outline: 0; background-color: transparent; border: none; display: block; float: left; white-space: nowrap; color: inherit; margin: 0 1rem 0 1rem; height: 3rem; line-height: 3rem; padding: 0 0.25rem; opacity: 0.8; font-size: 0.9rem; cursor: pointer; color: rgba(255, 255, 255, 0.75) }
-menu button:hover { background-color: #000; color: #002B36 }
+menu button { outline: 0; background-color: transparent; border: none; display: block; float: left; white-space: nowrap; color: inherit; margin: 0 0.5rem 0 0.5rem; height: 3rem; line-height: 3rem; padding: 0 0.75rem; opacity: 0.8; font-size: 0.9rem; cursor: pointer; color: rgba(255, 255, 255, 0.75); border-radius: 0.5rem }
+menu button:hover { background-color: #000; color: #FFF }
 menu button:focus { color: #FFF }
 menu button.active { background-color: #002B36; color: #FFF }
 menu button img { height: 1rem; width: 1rem; margin: 0.9rem 1rem 0 0; display: block; float: left }
@@ -27,7 +27,7 @@ label.title { display: block; margin: 1rem 0 0.5rem 0 !important; font-weight: n
 .post-information ul { margin: 0; padding: 0; list-style-type: none }
 .post-information li { list-style-type: none; color: rgba(0, 0, 0, 0,75) }
 .post-information label { margin-right: 0.5rem; font-weight: bold; color: rgba(255, 255, 255, 0.5); font-size: 1rem }
-.post-information select { margin-right: 0.5rem; height: 1.6rem; min-width: 16rem; font-size: 1rem }
+.post-information select { margin-right: 0.5rem; height: 1.6rem; min-width: 16rem; font-size: 1rem; background-color: #FFF }
 .post-information input[type=text] { margin-right: 0.5rem; width: 10rem; padding: 0.25rem 0.5rem; background-color: #DDD; color: #333; border: 1px solid #999; font-size: 1rem; font-weight: bold }
 .post-information button { display: inline-block; margin-right: 0.5rem; font-size: 1rem; font-weight: bold; background-color: #000; border: 1px outset #999; border-radius: 0.25rem; color: #FFF; padding: 0.25rem 0.5rem }
 .post-information h2 button { margin-right: 0; margin-left: 0.5rem }
