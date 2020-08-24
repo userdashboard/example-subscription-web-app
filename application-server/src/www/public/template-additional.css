@@ -11,7 +11,9 @@ body,
 #spillage-container menu { border-top-left-radius: 0.5rem }
 .navigation { border-bottom: none }
 .navigation a,
-.navigation span { color: rgba(255, 255, 255, 0.75) !important; padding: 0 0.5rem }
-.navigation a:hover { color: #FFF; background-color: rgba(255, 255, 255, 0.25) }
-select { background-color: #FFF; color: #000 !important }
-select option  { color: #000 !important; background-color: #FFF }
+.navigation span { color: rgba(255, 255, 255, 0.75) !important; padding: 0 0.75rem !important; margin: 0 0.25rem !important }
+.navigation a:hover { color: #FFF !important; background-color: #000 !important; border-radius: 0.5rem !important; text-decoration: none !important }
+#spillage-container a { padding: 0 0.5rem !important; margin: 0 !important; line-height: 2rem !important }
+#spillage-container a span { margin: 0 !important; padding: 0 !important }
+.menus .menu a { color: #002B36 !important }
+.menus .menu a:hover { color: #006B36 !important }
