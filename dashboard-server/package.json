@@ -1,5 +1,5 @@
 {
-  "name": "example-subscription-web-app",
+  "name": "example-web-app",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -15,16 +15,17 @@
   "dependencies": {
     "@userdashboard/dashboard": "^1.0.311",
     "@userdashboard/organizations": "^1.0.128",
-    "@userdashboard/stripe-subscriptions": "^1.0.80"
+    "@userdashboard/storage-redis": "^1.0.22",
+    "faker": "^4.1.0",
+    "puppeteer": "^2.1.1"
   },
   "dashboard": {
-    "title": "Example Subscription Web App",
+    "title": "Example web app",
     "modules": [
-      "@userdashboard/organizations",
-      "@userdashboard/stripe-subscriptions"
+      "@userdashboard/organizations"
     ],
     "server": [
-      "/src/server/allow-api-requests.js"
+      "/src/server/allow-api-request.js"
     ],
     "proxy": [
       "/src/proxy/x-account.js",
