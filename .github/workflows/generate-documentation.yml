@@ -42,7 +42,7 @@ jobs:
         GENERATE_API_TXT: false   
         GENERATE_RESPONSE: true
         GENERATE_SCREENSHOTS: true
-        RESPONSE_PATH: "/home/runner/work/example-subscription-web-app/example-subscription-web-app/documentation/example-subscription-web-app"
+        RESPONSE_PATH: "/home/runner/work/example-subscription-web-app/example-subscription-web-app/documentation/api/example-subscription-web-app"
         SCREENSHOT_PATH: "/home/runner/work/example-subscription-web-app/example-subscription-web-app/documentation/screenshots/example-subscription-web-app"
         SCREENSHOT_LANGUAGES: "en,es"
         APPLICATION_SERVER: "http://localhost:9213"
