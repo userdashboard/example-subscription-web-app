@@ -1,6 +1,6 @@
-# Example subscription web app:  Pastebin
+# Example subscription web app
 
-## Converting hastebin to a Stripe subscription web app with user accounts and organizations
+## Creating a "PasteBin" web app with Stripe subscriptions and organizations
 
 This example project started as a copy of [Hastebin](https://github.com/seejohnrun/haste-server).  It is a 'pastebin' website you post code and text to share.  The original Hastebin application has no user accounts, all posts are anonymous and publicly accessible via a generated URL.  It was a single-page web app using client-side JavaScript and a server-side API to manage documents posted by guests.
 
