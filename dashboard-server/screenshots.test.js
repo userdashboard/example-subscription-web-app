@@ -426,9 +426,7 @@ describe('example-subscription-web-app', () => {
       organization: 'My organization'
     }
     req.waitBefore = async (page) => {
-      console.log(1)
       while (true) {
-        console.log(2)
         const frame = await page.frames().find(f => f.name() === 'application-iframe')
         if (!frame) {
           await page.waitFor(100)
@@ -445,12 +443,9 @@ describe('example-subscription-web-app', () => {
       }
     }
     req.waitAfter = async (page) => {
-      console.log(3)
       while (true) {
-        console.log(4)
         const frame = await page.frames().find(f => f.name() === 'application-iframe')
         if (!frame) {
-          console.log('skip1')
           await page.waitFor(100)
           continue
         }
@@ -461,7 +456,6 @@ describe('example-subscription-web-app', () => {
         if (postContent === 'block') {
           return
         }
-        console.log('skip2', postContent)
         await page.waitFor(100)
       }
     }
@@ -483,9 +477,7 @@ describe('example-subscription-web-app', () => {
       {
         click: '#organization-list-button',
         waitAfter: async (page) => {
-          console.log(5)
           while (true) {
-            console.log(6)
             const frame = await page.frames().find(f => f.name() === 'application-iframe')
             if (!frame) {
               await page.waitFor(100)
@@ -510,9 +502,7 @@ describe('example-subscription-web-app', () => {
       {
         click: '/document/readme.md',
         waitAfter: async (page) => {
-          console.log(7)
           while (true) {
-            console.log(8)
             const frame = await page.frames().find(f => f.name() === 'application-iframe')
             if (!frame) {
               await page.waitFor(100)
