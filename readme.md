@@ -1,6 +1,18 @@
 # Example subscription web app
 
-## Creating a "PasteBin" web app with Stripe subscriptions and organizations
+#### Index
+
+- [Introduction](#introduction)
+- [Application server structure](#application-server-structure)
+- [Dashboard server structure](#dashboard-server-structure)
+- [Requiring subscriptions](#requiring-subscriptions)
+- [Requiring paid invoices](#requiring-paid-invoices)
+- [Requiring payment authorizations](#requiring-payment-authorizations)
+- [Starting the dashboard and application servers](#starting-the-dashboard-and-application-servers)
+- [Creating subscription plans](#creating-subscription-plans)
+- [Github repository](https://github.com/userdashboard/example-web-app)
+
+## Introduction
 
 This example project started as a copy of [Hastebin](https://github.com/seejohnrun/haste-server).  It is a 'pastebin' website you post code and text to share.  The original Hastebin application has no user accounts, all posts are anonymous and publicly accessible via a generated URL.  It was a single-page web app using client-side JavaScript and a server-side API to manage documents posted by guests.
 
