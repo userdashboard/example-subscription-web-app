@@ -15,7 +15,7 @@
   "dependencies": {
     "@userdashboard/dashboard": "^1.0.313",
     "@userdashboard/organizations": "^1.0.128",
-    "@userdashboard/storage-redis": "^1.0.22",
+    "@userdashboard/storage-redis": "^1.0.24",
     "@userdashboard/stripe-subscriptions": "^1.0.80"
   },
   "dashboard": {
